@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "910169460068",
+    "firebase_url": "https://savingfood-c9f8b.firebaseio.com",
+    "project_id": "savingfood-c9f8b",
+    "storage_bucket": "savingfood-c9f8b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:910169460068:android:65851cf03bb2cf66",
+        "android_client_info": {
+          "package_name": "br.com.savingfood"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "910169460068-qg9spotoe467rqkmhpido8c38oq6eqsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCzJJS94RzhvAVfWK6BHQ1fMIkHRIZohTs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
