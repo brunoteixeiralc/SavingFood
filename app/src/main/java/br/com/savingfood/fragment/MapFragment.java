@@ -64,6 +64,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     private Fragment fragment;
     private Bundle bundle;
     private Toolbar toolbar;
+    private Location locationNow;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -104,7 +105,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
             }
         });
 
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(map);
+        mapFragment = (com.google.android.gms.maps.SupportMapFragment) getChildFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(MapFragment.this);
         googleApiClient = new GoogleApiClient.Builder(MapFragment.this.getActivity())
                 .addConnectionCallbacks(this)
@@ -134,7 +135,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.i("Pagpeg", "Conectado ao google play service");
+        Log.i("Saving Food", "Conectado ao google play service");
         startLocationUpdates();
     }
 
@@ -145,7 +146,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i("Pagpeg", "Erro ao conectar: " + connectionResult);
+        Log.i("Saving Food", "Erro ao conectar: " + connectionResult);
     }
 
     @Override
@@ -184,7 +185,10 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     @Override
     public void onLocationChanged(Location location) {
 
-        setUpMap(location);
+        if(locationNow == null || (locationNow.getLatitude() != location.getLatitude() && locationNow.getLongitude() != location.getLongitude())){
+            locationNow = location;
+            setUpMap(location);
+        }
     }
 
 
@@ -233,7 +237,6 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
         });
 
         gMap.setOnMarkerClickListener(clusterManager);
-        //gMap.setOnCameraChangeListener(clusterManager);
         gMap.setOnInfoWindowClickListener(clusterManager);
         gMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
 
@@ -310,6 +313,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                                 clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
                             }
                         }
+                        clManager.cluster();
                         stopLocationUpdates();
                         Utils.closeDialog(MapFragment.this.getContext());
                     }
@@ -318,7 +322,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                Utils.closeDialog(MapFragment.this.getContext());
             }
         });
     }

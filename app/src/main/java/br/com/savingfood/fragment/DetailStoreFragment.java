@@ -1,6 +1,5 @@
 package br.com.savingfood.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -33,10 +33,19 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import br.com.savingfood.R;
+import br.com.savingfood.adapter.ProductAdapter;
+import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
@@ -54,19 +63,21 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private Store store;
     private SupportMapFragment mapFragment;
     private Fragment fragment;
+    private RecyclerView.Adapter mAdapter;
     private TextView name,address,distance;
     private ProgressBar progressBar;
     public ImageView img;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
+    private List<Product> products = new ArrayList<>();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-
         Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando produtos");
+        getProducts();
     }
 
     @Nullable
@@ -175,4 +186,56 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         return false;
     }
 
+    private void getProducts(){
+
+        mDatabase.child("product").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                products.clear();
+
+                if (dataSnapshot.hasChildren()) {
+
+                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+
+                        Product product = st.getValue(Product.class);
+                        products.add(product);
+                    }
+                }
+
+                if(products.size() != 0){
+
+                    recyclerView.setVisibility(View.VISIBLE);
+                    mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+                    recyclerView.setAdapter(mAdapter);
+
+                }
+
+                Utils.closeDialog(DetailStoreFragment.this.getContext());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private ProductAdapter.ProductOnClickListener onClickListener() {
+        return new ProductAdapter.ProductOnClickListener() {
+            @Override
+            public void onClick(View view, int idx) {
+
+                Product product = products.get(idx);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("product",product);
+
+                fragment = new ProductDetailFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+            }
+        };
+    }
 }

@@ -8,6 +8,7 @@ public enum EnumToolBar {
 
     STOREMAP,
     STORELIST,
-    STOREDETAIL
+    STOREDETAIL,
+    PRODUCTSDETAIL
 
 }
