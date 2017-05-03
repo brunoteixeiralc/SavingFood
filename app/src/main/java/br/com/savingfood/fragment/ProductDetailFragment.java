@@ -3,14 +3,11 @@ package br.com.savingfood.fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,6 +17,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.savingfood.R;
 import br.com.savingfood.model.Product;
@@ -33,15 +32,13 @@ import br.com.savingfood.utils.Utils;
 public class ProductDetailFragment extends Fragment {
 
     private View view;
-    private Button btnAddCart,btnRemoveCart;
-    private Snackbar snackbar;
     private CoordinatorLayout coordinatorLayout;
-    private TextView name,price,description;
-    private EditText quantity;
+    private TextView name,description,price_from,price_to,quantity;;
     private ImageView img;
     private Product product;
     private ProgressBar progressBar;
     private Toolbar toolbar;
+    private DatabaseReference mDatabase;
 
     @Nullable
     @Override
@@ -51,34 +48,45 @@ public class ProductDetailFragment extends Fragment {
 
         coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
         name = (TextView) view.findViewById(R.id.name);
-        price = (TextView) view.findViewById(R.id.price);
+        price_from = (TextView) view.findViewById(R.id.price_from);
+        price_to = (TextView) view.findViewById(R.id.price_to);
+        quantity = (TextView) view.findViewById(R.id.quantity);
         description = (TextView) view.findViewById(R.id.description);
         img = (ImageView) view.findViewById(R.id.img);
         progressBar = (ProgressBar) view.findViewById(R.id.progress);
 
         product = (Product) getArguments().getSerializable("product");
 
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("product").child(product.getUid()).child("views").setValue(product.getViews() + 1);
+
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle(product.getName() + " - Detalhes");
+        toolbar.setTitle(product.getName());
 
         Utils.setIconBar(EnumToolBar.PRODUCTSDETAIL,toolbar);
 
-        name.setText(product.getName() + " " + product.getUnit_quantity());
-        price.setText("R$ " + product.getPrice());
+        name.setText(product.getName());
+        price_from.setText("R$ " + product.getPrice());
+        price_to.setText("R$ " + product.getOld_price());
         description.setText(product.getDescription());
-        Glide.with(ProductDetailFragment.this.getContext()).load(product.getImg()).listener(new RequestListener<String, GlideDrawable>() {
-            @Override
-            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                return false;
-            }
+        quantity.setText(product.getQuantity() + " unidades");
+        if(product.getImg() != null){
+            Glide.with(ProductDetailFragment.this.getContext()).load(product.getImg()).listener(new RequestListener<String, GlideDrawable>() {
+                @Override
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
+                }
 
-            @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                progressBar.setVisibility(View.GONE);
-                return false;
-            }
-        }).diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+                @Override
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                    progressBar.setVisibility(View.GONE);
+                    return false;
+                }
+            }).diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
+        }else{
+            progressBar.setVisibility(View.GONE);
+        }
 
         return view;
     }

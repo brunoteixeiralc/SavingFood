@@ -10,6 +10,8 @@ public class Product implements Serializable {
 
     private String name;
 
+    private String uid;
+
     private Long bar_code;
 
     private String category;
@@ -35,6 +37,8 @@ public class Product implements Serializable {
     private int quantity;
 
     private boolean inCart;
+
+    private int percent;
 
     public Long getBar_code() {
         return bar_code;
@@ -146,5 +150,21 @@ public class Product implements Serializable {
 
     public void setOld_price(Double old_price) {
         this.old_price = old_price;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public int getPercent() {
+        return percent;
+    }
+
+    public void setPercent(int percent) {
+        this.percent = percent;
     }
 }

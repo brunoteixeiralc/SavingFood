@@ -61,10 +61,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
        final Product p = products.get(position);
 
        holder.name.setText(p.getName());
+       holder.percent.setText(p.getPercent() + "%");
        holder.quantity.setText(p.getQuantity() + " itens");
        holder.views.setText(p.getViews() + " visualizações");
        holder.price_from.setPaintFlags(holder.price_from.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-       //holder.price_from.setBackground(context.getResources().getDrawable(R.drawable.line));
        holder.price_from.setText(Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
         holder.price_to.setText("para " + Money.reais(new BigDecimal(p.getOld_price(), MathContext.DECIMAL64)).toString());
        if(p.getImg() != null){
@@ -107,13 +107,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView name,price_from,price_to,views,quantity;
+        public TextView name,price_from,price_to,views,quantity,percent;
         public ImageView img;
         public ProgressBar progressBar;
 
         public ProductViewHolder(View view) {
             super(view);
             name = (TextView) view.findViewById(R.id.name);
+            percent = (TextView) view.findViewById(R.id.percent);
             views = (TextView) view.findViewById(R.id.views);
             quantity = (TextView) view.findViewById(R.id.quantity);
             price_from = (TextView) view.findViewById(R.id.price_from);

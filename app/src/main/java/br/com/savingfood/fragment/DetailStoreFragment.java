@@ -199,6 +199,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                     for (DataSnapshot st : dataSnapshot.getChildren()) {
 
                         Product product = st.getValue(Product.class);
+                        product.setUid(st.getKey());
                         products.add(product);
                     }
                 }
