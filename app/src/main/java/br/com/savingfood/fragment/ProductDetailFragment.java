@@ -67,10 +67,10 @@ public class ProductDetailFragment extends Fragment {
         Utils.setIconBar(EnumToolBar.PRODUCTSDETAIL,toolbar);
 
         name.setText(product.getName());
-        price_from.setText("R$ " + product.getPrice());
-        price_to.setText("R$ " + product.getOld_price());
+        price_from.setText("R$ " + product.getOld_price());
+        price_to.setText("para R$ " + product.getPrice());
         description.setText(product.getDescription());
-        quantity.setText(product.getQuantity() + " unidades");
+        quantity.setText(product.getQuantity() + " unidades - data de vencimento " + product.getDue_date());
         if(product.getImg() != null){
             Glide.with(ProductDetailFragment.this.getContext()).load(product.getImg()).listener(new RequestListener<String, GlideDrawable>() {
                 @Override

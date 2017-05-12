@@ -28,3 +28,8 @@ exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>
 	return;
 
 });
+
+exports.registerDate = functions.database.ref('/product/{uid}/').onWrite(event =>{
+
+	//return event.data.ref.child('register_date').set(Date.now());
+});

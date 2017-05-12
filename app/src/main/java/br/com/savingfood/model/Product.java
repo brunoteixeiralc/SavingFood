@@ -40,6 +40,8 @@ public class Product implements Serializable {
 
     private int percent;
 
+    private String due_date;
+
     public Long getBar_code() {
         return bar_code;
     }
@@ -166,5 +168,13 @@ public class Product implements Serializable {
 
     public void setPercent(int percent) {
         this.percent = percent;
+    }
+
+    public String getDue_date() {
+        return due_date;
+    }
+
+    public void setDue_date(String due_date) {
+        this.due_date = due_date;
     }
 }

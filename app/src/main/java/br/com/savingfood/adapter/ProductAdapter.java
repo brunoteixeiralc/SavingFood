@@ -62,11 +62,11 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
        holder.name.setText(p.getName());
        holder.percent.setText(p.getPercent() + "%");
-       holder.quantity.setText(p.getQuantity() + " itens");
+       holder.quantity.setText("Restam " + p.getQuantity() + " itens");
        holder.views.setText(p.getViews() + " visualizações");
        holder.price_from.setPaintFlags(holder.price_from.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-       holder.price_from.setText(Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
-        holder.price_to.setText("para " + Money.reais(new BigDecimal(p.getOld_price(), MathContext.DECIMAL64)).toString());
+       holder.price_from.setText(Money.reais(new BigDecimal(p.getOld_price(), MathContext.DECIMAL64)).toString());
+        holder.price_to.setText("para " + Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
        if(p.getImg() != null){
            Glide.with(context).load(p.getImg()).listener(new RequestListener<String, GlideDrawable>() {
                @Override
