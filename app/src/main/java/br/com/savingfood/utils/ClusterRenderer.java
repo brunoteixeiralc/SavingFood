@@ -2,6 +2,7 @@ package br.com.savingfood.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -32,11 +33,15 @@ public class ClusterRenderer extends DefaultClusterRenderer<ClusterMarkerLocatio
     }
 
     @Override
+    protected boolean shouldRenderAsCluster(Cluster<ClusterMarkerLocation> cluster) {
+        return cluster.getSize() > 1;
+    }
+
+    @Override
     protected void onBeforeClusterItemRendered(ClusterMarkerLocation item, MarkerOptions markerOptions) {
 
-        BitmapDescriptor markerDescriptor = BitmapDescriptorFactory.defaultMarker(205);
-
-        markerOptions.icon(markerDescriptor);
+        //BitmapDescriptor markerDescriptor = BitmapDescriptorFactory.defaultMarker(180);
+        //markerOptions.icon(markerDescriptor);
     }
 
     @Override
@@ -47,11 +52,11 @@ public class ClusterRenderer extends DefaultClusterRenderer<ClusterMarkerLocatio
     @Override
     protected void onBeforeClusterRendered(Cluster<ClusterMarkerLocation> cluster, MarkerOptions markerOptions) {
 
-        mClusterIconGenerator.setBackground(
-                ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.circle_background));
-        mClusterIconGenerator.setTextAppearance(R.style.AppTheme_WhiteTextAppearance);
+//        mClusterIconGenerator.setBackground(
+//                ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.circle_background));
+//        mClusterIconGenerator.setTextAppearance(R.style.AppTheme_WhiteTextAppearance);
 
-        final Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
-        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
+//        final Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
+//        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(icon));
     }
 }

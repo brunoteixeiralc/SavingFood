@@ -21,6 +21,10 @@ public class ClusterMarkerLocation implements ClusterItem{
         this.store = store;
     }
 
+    public ClusterMarkerLocation(LatLng latLng) {
+        this.position = latLng;
+    }
+
     @Override
     public LatLng getPosition() {
         return position;

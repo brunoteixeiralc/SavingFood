@@ -236,12 +236,13 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
             }
         });
 
+        gMap.setOnCameraIdleListener(clusterManager);
         gMap.setOnMarkerClickListener(clusterManager);
         gMap.setOnInfoWindowClickListener(clusterManager);
-        gMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
+        //gMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
 
-        clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new ClusterMarkerLocationAdapter());
-        clusterManager.setRenderer(new ClusterRenderer(MapFragment.this.getContext(),gMap,clusterManager));
+        //clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new ClusterMarkerLocationAdapter());
+        //clusterManager.setRenderer(new ClusterRenderer(MapFragment.this.getContext(),gMap,clusterManager));
         getStores(clusterManager,l);
 
         clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarkerLocation>() {
@@ -257,6 +258,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                 transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         });
+
     }
 
     public class ClusterMarkerLocationAdapter implements GoogleMap.InfoWindowAdapter{

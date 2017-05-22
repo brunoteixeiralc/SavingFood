@@ -50,7 +50,7 @@ public final class Utils {
 
     public static void openDialog(Context context, String text){
 
-        int[] colors = {Color.parseColor("#3fa9f5")};
+        int[] colors = {Color.parseColor("#729762")};
 
         arcConfiguration = new ArcConfiguration(context);
         arcConfiguration.setLoaderStyle(SimpleArcLoader.STYLE.SIMPLE_ARC);
