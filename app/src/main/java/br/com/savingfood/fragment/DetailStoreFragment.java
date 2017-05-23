@@ -2,6 +2,7 @@ package br.com.savingfood.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
@@ -66,10 +67,11 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private RecyclerView.Adapter mAdapter;
     private TextView name,address,distance;
     private ProgressBar progressBar;
-    public ImageView img;
+    public ImageView img, mIconFilter;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
     private List<Product> products = new ArrayList<>();
+    private BottomSheetDialog dialog;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,6 +101,14 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
         toolbar.setTitle(store.getNetwork());
+
+        mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
+        mIconFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                 abrirBottomSheerFilter();
+            }
+        });
 
         Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
 
@@ -238,5 +248,13 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                 transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
+    }
+
+    private void abrirBottomSheerFilter(){
+
+       View view = DetailStoreFragment.this.getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_filter,null);
+        dialog = new BottomSheetDialog(view.getContext());
+        dialog.setContentView(view);
+        dialog.show();
     }
 }

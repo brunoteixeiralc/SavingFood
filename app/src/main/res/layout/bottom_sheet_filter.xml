@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomSheetLayout"
+    android:layout_width="match_parent"
+    android:layout_height="300dp"
+    android:background="@android:color/white"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="0dp"
+    android:padding="6dp"
+    android:orientation="vertical"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <TextView
+        android:id="@+id/titulo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Filtrar por: "
+        android:textColor="@color/colorPrimary"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/more_views"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mais visualizados"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/less_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Menos visualizados"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/more_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Mais quantidades"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/less_quantity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Menos quantidades"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/more_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Maior preço"
+        android:padding="8dp"/>
+
+    <TextView
+        android:id="@+id/less_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Menor preço"
+        android:padding="8dp"/>
+
+</LinearLayout>
