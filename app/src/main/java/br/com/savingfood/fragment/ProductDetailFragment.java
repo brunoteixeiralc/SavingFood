@@ -22,8 +22,6 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.savingfood.R;
 import br.com.savingfood.model.Product;
-import br.com.savingfood.utils.EnumToolBar;
-import br.com.savingfood.utils.Utils;
 
 /**
  * Created by brunolemgruber on 16/07/16.
@@ -64,13 +62,11 @@ public class ProductDetailFragment extends Fragment {
         toolbar.setVisibility(View.VISIBLE);
         toolbar.setTitle(product.getName());
 
-        Utils.setIconBar(EnumToolBar.PRODUCTSDETAIL,toolbar);
-
         name.setText(product.getName());
         price_from.setText("R$ " + product.getOld_price());
         price_to.setText("para R$ " + product.getPrice());
         description.setText(product.getDescription());
-        quantity.setText(product.getQuantity() + " unidades - data de vencimento " + product.getDue_date());
+        quantity.setText(product.getQuantity() + " unidades. Vencimento " + product.getDue_date());
         if(product.getImg() != null){
             Glide.with(ProductDetailFragment.this.getContext()).load(product.getImg()).listener(new RequestListener<String, GlideDrawable>() {
                 @Override

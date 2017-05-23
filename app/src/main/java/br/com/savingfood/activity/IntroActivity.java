@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+
 import com.github.paolorotolo.appintro.AppIntro2;
 
 import br.com.savingfood.R;
@@ -19,7 +20,6 @@ public class IntroActivity extends AppIntro2 {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         addSlide(SlideFragment.newInstance(R.layout.wizard1));
 
     }

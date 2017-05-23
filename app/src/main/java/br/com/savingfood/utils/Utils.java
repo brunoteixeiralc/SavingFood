@@ -23,7 +23,7 @@ public final class Utils {
 
     private static SimpleArcDialog simpleArcDialog;
     private static ArcConfiguration arcConfiguration;
-    private static ImageView mIconList,mIconMap,mIconBarcode,mIconCreditCard,mIconShopperComplete,mIconRegisterProduct;
+    private static ImageView mIconList,mIconMap,mIconFilter;
     private static TextView mIconLogout;
 
     public static void hideKeyboard(Activity activity) {
@@ -70,17 +70,23 @@ public final class Utils {
 
         mIconList = (ImageView) toolbar.findViewById(R.id.ic_listStore);
         mIconMap = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
+        mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
 
         mIconList.setVisibility(View.GONE);
         mIconMap.setVisibility(View.GONE);
+        mIconFilter.setVisibility(View.GONE);
 
         switch (enumIconBar){
             case STORELIST:{
                 mIconMap.setVisibility(View.VISIBLE);
                 break;
             }
-            case STOREMAP:{
+            case STOREMAP: {
                 mIconList.setVisibility(View.VISIBLE);
+                break;
+            }
+            case STOREDETAIL: {
+                mIconFilter.setVisibility(View.VISIBLE);
                 break;
             }
             default:break;
