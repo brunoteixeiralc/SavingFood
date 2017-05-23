@@ -1,12 +1,14 @@
 package br.com.savingfood.model;
 
+import android.support.annotation.NonNull;
+
 import java.io.Serializable;
 
 /**
  * Created by brunolemgruber on 18/07/16.
  */
 
-public class Product implements Serializable {
+public class Product implements Serializable,Comparable<Product> {
 
     private String name;
 
@@ -41,6 +43,8 @@ public class Product implements Serializable {
     private int percent;
 
     private String due_date;
+
+    private String fieldToFilter;
 
     public Long getBar_code() {
         return bar_code;
@@ -176,5 +180,26 @@ public class Product implements Serializable {
 
     public void setDue_date(String due_date) {
         this.due_date = due_date;
+    }
+
+    @Override
+    public int compareTo(@NonNull Product product) {
+
+       if(product.getFieldToFilter().equalsIgnoreCase("views")){
+           return this.views - product.getViews();
+       }else if(product.getFieldToFilter().equalsIgnoreCase("quantity")){
+           return this.quantity - product.getQuantity();
+       }else if(product.getFieldToFilter().equalsIgnoreCase("price")){
+           return Double.compare(this.price,product.getPrice());
+       }
+        return 0;
+    }
+
+    public String getFieldToFilter() {
+        return fieldToFilter;
+    }
+
+    public void setFieldToFilter(String fieldToFilter) {
+        this.fieldToFilter = fieldToFilter;
     }
 }

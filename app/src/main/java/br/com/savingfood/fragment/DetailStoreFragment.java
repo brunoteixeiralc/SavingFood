@@ -42,6 +42,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import br.com.savingfood.R;
@@ -72,6 +74,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private Toolbar toolbar;
     private List<Product> products = new ArrayList<>();
     private BottomSheetDialog dialog;
+    private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -250,11 +253,111 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         };
     }
 
+    private void filterProducts(final String type, final String node){
+
+        Utils.openDialog(DetailStoreFragment.this.getContext(),"Filtrando");
+
+        mDatabase.child("product").orderByChild(node).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                products.clear();
+
+                if (dataSnapshot.hasChildren()) {
+
+                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+
+                        Product product = st.getValue(Product.class);
+                        product.setFieldToFilter(node);
+                        product.setUid(st.getKey());
+                        products.add(product);
+                    }
+                }
+
+                if(products.size() != 0){
+
+                    if(type.equalsIgnoreCase("more")){
+                        Collections.sort(products, Collections.reverseOrder());
+                    }
+
+                    recyclerView.setVisibility(View.VISIBLE);
+                    mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+                    recyclerView.setAdapter(mAdapter);
+
+                }
+
+                dialog.dismiss();
+
+                Utils.closeDialog(DetailStoreFragment.this.getContext());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void abrirBottomSheerFilter(){
 
        View view = DetailStoreFragment.this.getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_filter,null);
-        dialog = new BottomSheetDialog(view.getContext());
-        dialog.setContentView(view);
-        dialog.show();
+       dialog = new BottomSheetDialog(view.getContext());
+       dialog.setContentView(view);
+       dialog.show();
+
+       lessViews = (TextView) view.findViewById(R.id.less_view);
+       lessViews.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+               filterProducts("less","views");
+           }
+       });
+
+        moreViews = (TextView) view.findViewById(R.id.more_views);
+        moreViews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                filterProducts("more","views");
+            }
+        });
+
+        moreQuatity = (TextView) view.findViewById(R.id.more_quantity);
+        moreQuatity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                filterProducts("more","quantity");
+            }
+        });
+
+        lessQuatity = (TextView) view.findViewById(R.id.less_quantity);
+        lessQuatity.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                filterProducts("less","quantity");
+            }
+        });
+
+        morePrice = (TextView) view.findViewById(R.id.more_price);
+        morePrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                filterProducts("more","price");
+            }
+        });
+
+        lessPrice = (TextView) view.findViewById(R.id.less_price);
+        lessPrice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                filterProducts("less","price");
+            }
+        });
+
     }
 }
