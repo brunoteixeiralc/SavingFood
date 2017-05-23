@@ -89,6 +89,10 @@ public final class Utils {
                 mIconFilter.setVisibility(View.VISIBLE);
                 break;
             }
+            case PRODUCTDETAIL: {
+                break;
+            }
+
             default:break;
         }
 
