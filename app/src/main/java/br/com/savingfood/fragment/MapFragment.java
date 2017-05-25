@@ -243,7 +243,8 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
         //clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new ClusterMarkerLocationAdapter());
         //clusterManager.setRenderer(new ClusterRenderer(MapFragment.this.getContext(),gMap,clusterManager));
-        getStores(clusterManager,l);
+        if(storeList == null || storeList.size() == 0)
+            getStores(clusterManager,l);
 
         clusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarkerLocation>() {
             @Override
