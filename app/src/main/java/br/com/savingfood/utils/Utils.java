@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 import com.leo.simplearcloader.ArcConfiguration;
 import com.leo.simplearcloader.SimpleArcDialog;
 import com.leo.simplearcloader.SimpleArcLoader;
@@ -23,8 +23,7 @@ public final class Utils {
 
     private static SimpleArcDialog simpleArcDialog;
     private static ArcConfiguration arcConfiguration;
-    private static ImageView mIconList,mIconMap,mIconFilter;
-    private static TextView mIconLogout;
+    private static ImageView mIconList,mIconMap,mIconFilter,mIconNotificationOff,mIconNotificationOn;
 
     public static void hideKeyboard(Activity activity) {
         View view = activity.getCurrentFocus();
@@ -71,10 +70,14 @@ public final class Utils {
         mIconList = (ImageView) toolbar.findViewById(R.id.ic_listStore);
         mIconMap = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
+        mIconNotificationOff = (ImageView) toolbar.findViewById(R.id.ic_notification_off);
+        mIconNotificationOn = (ImageView) toolbar.findViewById(R.id.ic_notification_on);
 
         mIconList.setVisibility(View.GONE);
         mIconMap.setVisibility(View.GONE);
         mIconFilter.setVisibility(View.GONE);
+        mIconNotificationOff.setVisibility(View.GONE);
+        mIconNotificationOn.setVisibility(View.GONE);
 
         switch (enumIconBar){
             case STORELIST:{
@@ -90,6 +93,8 @@ public final class Utils {
                 break;
             }
             case PRODUCTDETAIL: {
+                mIconNotificationOff.setVisibility(View.VISIBLE);
+                mIconNotificationOn.setVisibility(View.GONE);
                 break;
             }
 
