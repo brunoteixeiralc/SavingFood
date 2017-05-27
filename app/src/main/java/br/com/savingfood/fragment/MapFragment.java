@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -23,6 +24,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,7 +39,6 @@ import java.util.List;
 import br.com.savingfood.R;
 import br.com.savingfood.model.ClusterMarkerLocation;
 import br.com.savingfood.model.Store;
-import br.com.savingfood.utils.ClusterRenderer;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
 import permissions.dispatcher.NeedsPermission;
@@ -65,6 +66,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     private Bundle bundle;
     private Toolbar toolbar;
     private Location locationNow;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -80,6 +82,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
         }
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(MapFragment.this.getContext());
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -102,6 +105,10 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                     transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
                     mIconListImageView.setVisibility(View.GONE);
                 }
+
+                Bundle params = new Bundle();
+                params.putString("icon_click", "ic_list");
+                mFirebaseAnalytics.logEvent("type_view_store", params);
             }
         });
 

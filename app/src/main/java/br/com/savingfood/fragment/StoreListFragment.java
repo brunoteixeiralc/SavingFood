@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.List;
 
 import br.com.savingfood.R;
@@ -36,6 +38,7 @@ public class StoreListFragment extends Fragment {
     private ImageView mIconMapImageView;
     private List<Store> storeList;
     private Toolbar toolbar;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
 
     @Nullable
@@ -43,6 +46,8 @@ public class StoreListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.list, container, false);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
 
         storeList = (List<Store>) getArguments().getSerializable("stores");
 
@@ -66,6 +71,10 @@ public class StoreListFragment extends Fragment {
                     mIconMapImageView.setVisibility(View.GONE);
                 }
 
+                Bundle params = new Bundle();
+                params.putString("icon_click", "ic_map");
+                mFirebaseAnalytics.logEvent("type_view_store", params);
+
             }
         });
 
@@ -87,6 +96,12 @@ public class StoreListFragment extends Fragment {
             public void onClickSticker(View view, int idx) {
 
                 Store storeSelected = storeList.get(idx);
+
+                Bundle bAnalytics = new Bundle();
+                bAnalytics.putString(FirebaseAnalytics.Param.ITEM_ID, storeSelected.getKeyStore());
+                bAnalytics.putString(FirebaseAnalytics.Param.ITEM_NAME, storeSelected.getName());
+                bAnalytics.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "store");
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bAnalytics);
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("store",storeSelected);
