@@ -3,6 +3,7 @@ package br.com.savingfood.firebase;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import br.com.savingfood.model.Alert;
 import br.com.savingfood.model.User;
 
 /**
@@ -18,8 +19,18 @@ public final class FirebaseServices {
         databaseReference.setValue(user);
     }
 
-    private void updateUser(){
+    public void updateUserToken(){
 
+    }
+
+    public static void saveAlert(String productName,Alert alert){
+        databaseReference = FirebaseDatabase.getInstance().getReference("alert").child(productName).child(alert.getUid());
+        databaseReference.setValue(alert.getTokenPush());
+    }
+
+    public static void deleteAlert(String productName,Alert alert){
+        databaseReference = FirebaseDatabase.getInstance().getReference("alert").child(productName).child(alert.getUid());
+        databaseReference.removeValue();
     }
 
 }

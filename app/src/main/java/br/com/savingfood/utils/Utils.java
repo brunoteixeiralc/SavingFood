@@ -3,6 +3,7 @@ package br.com.savingfood.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.telephony.TelephonyManager;
 import android.view.View;
@@ -45,6 +46,13 @@ public final class Utils {
         TelephonyManager tMgr =(TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
         String mPhoneNumber = tMgr.getLine1Number();
         return mPhoneNumber;
+    }
+
+    public static void openSnack(View view, String text){
+
+        Snackbar snackbar = Snackbar.make(view, text, Snackbar.LENGTH_LONG);
+        snackbar.show();
+
     }
 
     public static void openDialog(Context context, String text){

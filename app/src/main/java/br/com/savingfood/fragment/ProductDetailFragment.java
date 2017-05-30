@@ -1,8 +1,8 @@
 package br.com.savingfood.fragment;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -17,11 +17,16 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import br.com.savingfood.R;
+import br.com.savingfood.firebase.FirebaseServices;
+import br.com.savingfood.model.Alert;
 import br.com.savingfood.model.Product;
+import br.com.savingfood.utils.Config;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
 
@@ -32,13 +37,13 @@ import br.com.savingfood.utils.Utils;
 public class ProductDetailFragment extends Fragment {
 
     private View view;
-    private CoordinatorLayout coordinatorLayout;
     private TextView name,description,price_from,price_to,quantity;;
-    private ImageView img;
+    private ImageView img,mIcon_notification_on,mIcon_notification_off;
     private Product product;
     private ProgressBar progressBar;
     private Toolbar toolbar;
     private DatabaseReference mDatabase;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Nullable
     @Override
@@ -46,7 +51,6 @@ public class ProductDetailFragment extends Fragment {
 
         view = inflater.inflate(R.layout.content_product_detail, container, false);
 
-        coordinatorLayout = (CoordinatorLayout) view.findViewById(R.id.coordinatorLayout);
         name = (TextView) view.findViewById(R.id.name);
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
@@ -57,6 +61,8 @@ public class ProductDetailFragment extends Fragment {
 
         product = (Product) getArguments().getSerializable("product");
 
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(ProductDetailFragment.this.getContext());
+
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("product").child(product.getUid()).child("views").setValue(product.getViews() + 1);
 
@@ -65,6 +71,54 @@ public class ProductDetailFragment extends Fragment {
         toolbar.setTitle(product.getName());
 
         Utils.setIconBar(EnumToolBar.PRODUCTDETAIL,toolbar);
+
+        mIcon_notification_on = (ImageView) toolbar.findViewById(R.id.ic_notification_on);
+        mIcon_notification_on.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                SharedPreferences pref = view.getContext().getSharedPreferences(Config.SHARED_PREF, 0);
+                String regId = pref.getString("regId", null);
+
+                Alert alert = new Alert(FirebaseAuth.getInstance().getCurrentUser().getUid(),regId);
+                FirebaseServices.deleteAlert(product.getName(),alert);
+
+                mIcon_notification_on.setVisibility(View.GONE);
+                mIcon_notification_off.setVisibility(View.VISIBLE);
+
+                Utils.openSnack(view,"Alerta deletado.");
+
+            }
+        });
+
+        mIcon_notification_off = (ImageView) toolbar.findViewById(R.id.ic_notification_off);
+        mIcon_notification_off.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle params = new Bundle();
+                params.putString("alert_click", "alert_on");
+                params.putString("product_name", product.getName());
+                mFirebaseAnalytics.logEvent("active_alert", params);
+
+                SharedPreferences pref = view.getContext().getSharedPreferences(Config.SHARED_PREF, 0);
+                String regId = pref.getString("regId", null);
+
+                if(regId != null){
+                    Alert alert = new Alert(FirebaseAuth.getInstance().getCurrentUser().getUid(),regId);
+                    FirebaseServices.saveAlert(product.getName(),alert);
+
+                    mIcon_notification_on.setVisibility(View.VISIBLE);
+                    mIcon_notification_off.setVisibility(View.GONE);
+
+                    Utils.openSnack(view,"Alerta salvo.");
+
+                }else{
+                    Utils.openSnack(view,"Tivemos um problema.Tente novamente mais tarde.");
+                }
+
+            }
+        });
 
         name.setText(product.getName());
         price_from.setText("R$ " + product.getOld_price());

@@ -1,14 +1,14 @@
 const functions = require('firebase-functions');
-
 const admin = require('firebase-admin');
+
 admin.initializeApp(functions.config().firebase);
 
 exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>{
 
 	var eventSnapshot = event.data;
 
-	console.log("old Price exist",eventSnapshot.child('old_price').exists());
-	console.log("new Price exist",eventSnapshot.child('price').exists());
+	console.log("old price exist",eventSnapshot.child('old_price').exists());
+	console.log("new price exist",eventSnapshot.child('price').exists());
 
 	if(eventSnapshot.child('old_price').exists() && eventSnapshot.child('price').exists()){
 
@@ -19,7 +19,6 @@ exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>
 		console.log("new price",new_price);
 
 		const percent = (((old_price - new_price) * 100)/old_price)
-
 		console.log("Percent",percent);
 
 		return event.data.ref.child('percent').set(percent);
@@ -29,7 +28,64 @@ exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>
 
 });
 
-exports.registerDate = functions.database.ref('/product/{uid}/').onWrite(event =>{
+exports.sendAlertPush = functions.database.ref('/product/{uid}/').onWrite(event =>{
 
-	//return event.data.ref.child('register_date').set(Date.now());
+	let productCreated = false;
+	let productChanged = false;
+
+	let productData = event.data.val();
+
+	let productName = event.data.child('name').val();
+
+	if(!event.data.previous.exists()){
+		productCreated = true;
+		console.log("New Product",productName);
+	}else{
+		return;
+	}
+
+	if(!productCreated && event.data.changed()){
+		productChanged = true;
+		console.log("Exist Product",productName);
+		return;
+	}
+
+	return loadUsers(productName).then(tokens => {
+	
+	  	let payload = {
+				notification: {
+			    title: 'Saving Food - Alerta',
+			    body: productName + ' na lista.',
+			    sound: 'default',
+			    badge: '1'
+			    }
+			};
+
+		if(tokens.length > 0){
+			console.log("Send to",tokens.length + ' users');
+			return admin.messaging().sendToDevice(tokens, payload);
+		}else{
+			return;
+		}
+   
+	});
+
 });
+
+function loadUsers(productName) {
+	let dbRef = admin.database().ref('/alert').child(productName);
+
+	let defer = new Promise((resolve, reject) => {
+		dbRef.once('value', (snap) => {
+			let data = snap.val();
+      let tokens = [];
+      for (var property in data) {
+	      tokens.push(data[property]);
+      }
+			resolve(tokens);
+		}, (err) => {
+			reject(err);
+		});
+	});
+	return defer;
+}
