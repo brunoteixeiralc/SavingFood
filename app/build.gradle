@@ -56,7 +56,6 @@ android {
             debuggable false
             minifyEnabled true
             shrinkResources true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "String", "ENDPOINTSTORAGE", "\"gs://pagpeg-fc42f.appspot.com\"";
             buildConfigField "boolean", "REPORT_CRASH", "true"
             resValue "string", "google_maps_api_key", "AIzaSyDhgkhyV7t-R03KjrRivf2POqGvRMb9zLc"

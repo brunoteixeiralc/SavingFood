@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@color/colorPrimary"
+    android:gravity="center"
+    android:padding="8dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:text="Saving Food"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="30dp"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/find_product"
+            android:textColor="@color/white"
+            android:gravity="left"
+            android:textSize="18dp"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minLines="2"
+            android:maxLines="4"
+            android:hint="Digite aqui o produto"
+            android:textColor="@color/white"/>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pesquisar"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="20dp"
+            android:gravity="center">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp"
+                android:background="@color/white"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="ou"
+                android:textColor="@color/white"
+                android:gravity="center_horizontal|top"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp"
+                android:background="@color/white"/>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ver todos"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark" />
+
+    </LinearLayout>
+
+</LinearLayout>

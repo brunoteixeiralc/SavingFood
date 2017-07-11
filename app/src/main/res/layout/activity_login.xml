@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@color/colorPrimary"
+    android:padding="8dp"
+    android:gravity="center">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="0.3"
+    android:text="Saving Food"
+    android:textColor="@color/white"
+    android:gravity="center"
+    android:textSize="30dp"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/email_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:maxLines="4"
+                android:hint="@string/login_email"
+                android:textColor="@color/white"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp">
+
+            <EditText
+                android:id="@+id/pass_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minLines="2"
+                android:maxLines="4"
+                android:hint="@string/pass_login"
+                android:textColor="@color/white"/>
+
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/btn_enter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrar"
+            android:textColor="@color/white"
+            android:background="@color/colorPrimaryDark" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sem conta? Crie uma agora."
+            android:gravity="center_horizontal"
+            android:textColor="@color/white"
+            android:padding="10dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:gravity="center">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp"
+                android:background="@color/white"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:text="ou"
+                android:textColor="@color/white"
+                android:gravity="center_horizontal|top"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="1dp"
+                android:background="@color/white"/>
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Entrar com Facebook"
+            android:textColor="@color/white"
+            android:background="@color/colorfacebook"/>
+
+    </LinearLayout>
+
+</LinearLayout>

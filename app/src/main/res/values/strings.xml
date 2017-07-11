@@ -10,5 +10,8 @@
     <string name="price_to">para R$ 0.00</string>
     <string name="desc_product_test">teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste teste</string>
     <string name="description">Descrição</string>
+    <string name="login_email">Digite seu email</string>
+    <string name="pass_login">Digite sua senha</string>
+    <string name="find_product">Qual produto estaria procurando?</string>
 </resources>
 
