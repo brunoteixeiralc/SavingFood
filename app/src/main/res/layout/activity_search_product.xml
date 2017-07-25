@@ -29,6 +29,7 @@
             android:textSize="18dp"/>
 
         <EditText
+            android:id="@+id/txtFindProduct"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minLines="2"
@@ -37,6 +38,7 @@
             android:textColor="@color/white"/>
 
         <Button
+            android:id="@+id/btn_find_product"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Pesquisar"

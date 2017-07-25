@@ -49,7 +49,7 @@ public class Product implements Serializable,Comparable<Product> {
 
     private String fieldToFilter;
 
-    private List<Store> mStores;
+    private List<String> mStores;
 
     public Long getBar_code() {
         return bar_code;
@@ -208,11 +208,11 @@ public class Product implements Serializable,Comparable<Product> {
         this.fieldToFilter = fieldToFilter;
     }
 
-    public List<Store> getmStores() {
+    public List<String> getmStores() {
         return mStores;
     }
 
-    public void setmStores(List<Store> mStores) {
+    public void setmStores(List<String> mStores) {
         this.mStores = mStores;
     }
 }

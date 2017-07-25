@@ -63,7 +63,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private View view;
     protected RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
-    private Store store;
+    private Store store,productStore;
     private SupportMapFragment mapFragment;
     private Fragment fragment;
     private RecyclerView.Adapter mAdapter;
@@ -214,18 +214,18 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
                         Product product = st.getValue(Product.class);
 
-                        DataSnapshot dSStores = st.child("stores");
-                        for (DataSnapshot ds : dSStores.getChildren()) {
-                            Store store = ds.getValue(Store.class);
+                        DataSnapshot storesSnap = st.child("stores");
+                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
+                            if(sSnap.getKey().equalsIgnoreCase(store.getKeyStore())){
+                                product.setUid(st.getKey());
+                                products.add(product);
+                                break;
+                            }
                         }
-
-                        product.setUid(st.getKey());
-                        products.add(product);
                     }
                 }
 
                 if(products.size() != 0){
-
                     recyclerView.setVisibility(View.VISIBLE);
                     mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
                     recyclerView.setAdapter(mAdapter);
