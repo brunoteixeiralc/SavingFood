@@ -2,7 +2,10 @@ package br.com.savingfood.model;
 
 import android.support.annotation.NonNull;
 
+import com.google.firebase.database.Exclude;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by brunolemgruber on 18/07/16.
@@ -45,6 +48,8 @@ public class Product implements Serializable,Comparable<Product> {
     private String due_date;
 
     private String fieldToFilter;
+
+    private List<Store> mStores;
 
     public Long getBar_code() {
         return bar_code;
@@ -201,5 +206,13 @@ public class Product implements Serializable,Comparable<Product> {
 
     public void setFieldToFilter(String fieldToFilter) {
         this.fieldToFilter = fieldToFilter;
+    }
+
+    public List<Store> getmStores() {
+        return mStores;
+    }
+
+    public void setmStores(List<Store> mStores) {
+        this.mStores = mStores;
     }
 }

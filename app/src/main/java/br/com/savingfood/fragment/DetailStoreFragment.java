@@ -82,7 +82,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando produtos");
-        getProducts();
     }
 
     @Nullable
@@ -100,6 +99,8 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         }
 
         store = (Store) getArguments().getSerializable("store");
+
+        getProducts();
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -212,6 +213,12 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                     for (DataSnapshot st : dataSnapshot.getChildren()) {
 
                         Product product = st.getValue(Product.class);
+
+                        DataSnapshot dSStores = st.child("stores");
+                        for (DataSnapshot ds : dSStores.getChildren()) {
+                            Store store = ds.getValue(Store.class);
+                        }
+
                         product.setUid(st.getKey());
                         products.add(product);
                     }
