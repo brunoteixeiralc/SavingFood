@@ -35,7 +35,7 @@ public class StoreListFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private Fragment fragment;
-    private ImageView mIconMapImageView;
+    private ImageView mIconMapImageView,mIconListImageView;
     private List<Store> storeList;
     private Toolbar toolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -57,6 +57,8 @@ public class StoreListFragment extends Fragment {
 
         Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
 
+        mIconListImageView = (ImageView) toolbar.findViewById(R.id.ic_listStore);
+
         mIconMapImageView = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
         mIconMapImageView.setVisibility(View.VISIBLE);
         mIconMapImageView.setOnClickListener(new View.OnClickListener() {
@@ -66,9 +68,9 @@ public class StoreListFragment extends Fragment {
                 fragment = new MapFragment();
 
                 if(fragment != null) {
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                    getFragmentManager().popBackStack();
                     mIconMapImageView.setVisibility(View.GONE);
+                    mIconListImageView.setVisibility(View.VISIBLE);
                 }
 
                 Bundle params = new Bundle();
