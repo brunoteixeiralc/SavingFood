@@ -26,7 +26,7 @@ import br.com.savingfood.model.Store;
 
 public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHolder> {
 
-    protected static final String TAG = "pagpeg";
+    protected static final String TAG = "savingfoods";
     private final List<Store> stores;
     private StoreOnClickListener storeOnClickListener;
     private final Context context;

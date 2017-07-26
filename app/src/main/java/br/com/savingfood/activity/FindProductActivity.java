@@ -3,6 +3,7 @@ package br.com.savingfood.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -21,13 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.savingfood.R;
-import br.com.savingfood.adapter.ProductAdapter;
-import br.com.savingfood.fragment.DetailStoreFragment;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.utils.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
-
-import static br.com.savingfood.R.layout.activity_search_product;
 
 /**
  * Created by brunolemgruber on 10/07/17.
@@ -77,11 +74,11 @@ public class FindProductActivity extends AppCompatActivity {
 
         if(!loadAllProduct){
             Bundle bundle = new Bundle();
-            bundle.putSerializable("product", (Serializable) products);
-            intent.putExtra("products",bundle);
+            bundle.putSerializable("products", (Serializable) products);
+            intent.putExtra("bundle_products",bundle);
         }
 
-        intent.putExtra("loadAllProduct",loadAllProduct);
+        intent.putExtra("loadAllProducts",loadAllProduct);
         startActivity(intent);
     }
 
@@ -125,5 +122,10 @@ public class FindProductActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
     }
 }

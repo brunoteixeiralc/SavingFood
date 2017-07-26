@@ -3,6 +3,7 @@ package br.com.savingfood.fragment;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +39,7 @@ import java.util.List;
 
 import br.com.savingfood.R;
 import br.com.savingfood.model.ClusterMarkerLocation;
+import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
@@ -67,6 +69,8 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     private Toolbar toolbar;
     private Location locationNow;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private boolean findAllProduct = true;
+    private List<Product> products = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -83,6 +87,11 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(MapFragment.this.getContext());
+
+        if(getArguments() != null) {
+            findAllProduct = getArguments().getBoolean("loadAllProducts");
+            products = (List<Product>) getArguments().getSerializable("products");
+        }
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -142,18 +151,18 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
     @Override
     public void onConnected(Bundle bundle) {
-        Log.i("Saving Food", "Conectado ao google play service");
+        Log.i("Saving Foods", "Conectado ao google play service");
         startLocationUpdates();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-        Log.i("Pagpeg", "Conexão interrompida");
+        Log.i("Saving Foods", "Conexão interrompida");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-        Log.i("Saving Food", "Erro ao conectar: " + connectionResult);
+        Log.i("Saving Foods", "Erro ao conectar: " + connectionResult);
     }
 
     @Override
@@ -306,21 +315,30 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                         for (DataSnapshot nt: dataSnapshot.getChildren()) {
                             for (DataSnapshot st: nt.getChildren()) {
 
-                                Store store = st.getValue(Store.class);
+                                    Store store = st.getValue(Store.class);
 
-                                Location storeLocation=new Location("storeLocation");
-                                storeLocation.setLatitude(store.getLat());
-                                storeLocation.setLongitude(store.getLng());
+                                    Location storeLocation=new Location("storeLocation");
+                                    storeLocation.setLatitude(store.getLat());
+                                    storeLocation.setLongitude(store.getLng());
 
-                                Float distanceTo = l.distanceTo(storeLocation) / 1000;
+                                    Float distanceTo = l.distanceTo(storeLocation) / 1000;
 
-                                store.setDistance(distanceTo);
+                                    store.setDistance(distanceTo);
 
-                                store.setNetwork(nt.getKey());
-                                store.setKeyStore(st.getKey());
+                                    store.setNetwork(nt.getKey());
+                                    store.setKeyStore(st.getKey());
 
-                                storeList.add(store);
-                                clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
+                                    if(!findAllProduct && products.size() > 0){
+                                       for (Product p : products){
+                                           if(p.getmStores().contains(store.getKeyStore())){
+                                              storeList.add(store);
+                                              clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
+                                            }
+                                        }
+                                    }else{
+                                        storeList.add(store);
+                                        clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
+                                    }
                             }
                         }
                         clManager.cluster();
@@ -336,5 +354,4 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
             }
         });
     }
-
 }

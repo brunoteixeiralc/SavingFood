@@ -48,7 +48,7 @@ android {
             buildConfigField "String", "ENDPOINTSTORAGE", "\"gs://pagpeg-debug-818a1.appspot.com\"";
             buildConfigField "boolean", "REPORT_CRASH", "false"
             resValue "string", "google_maps_api_key", "AIzaSyCVDwWsbnk4hzgwPiYHc7bCP4vGgwb0Uv0"
-            resValue "string", "app_name","Saving Food (Debug)"
+            resValue "string", "app_name","Saving Foods (Debug)"
         }
 
         release {
@@ -59,7 +59,7 @@ android {
             buildConfigField "String", "ENDPOINTSTORAGE", "\"gs://pagpeg-fc42f.appspot.com\"";
             buildConfigField "boolean", "REPORT_CRASH", "true"
             resValue "string", "google_maps_api_key", "AIzaSyDhgkhyV7t-R03KjrRivf2POqGvRMb9zLc"
-            resValue "string", "app_name","Saving Food"
+            resValue "string", "app_name","Saving Foods"
         }
     }
 }

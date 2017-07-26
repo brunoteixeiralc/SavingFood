@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -39,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    private Bundle bundle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -92,13 +92,17 @@ public class MainActivity extends AppCompatActivity {
         };
 
         fragment = new MapFragment();
+
+        bundle = new Bundle();
+        bundle.putBoolean("loadAllProducts", getIntent().getBooleanExtra("loadAllProducts",false));
+
+        if(!getIntent().getBooleanExtra("loadAllProducts",false)){
+            bundle.putSerializable("products",getIntent().getBundleExtra("bundle_products").getSerializable("products"));
+        }
+        fragment.setArguments(bundle);
+
         if(fragment != null)
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
     }
 
     @Override
