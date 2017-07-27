@@ -3,18 +3,78 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
     <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbarlayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary">
+        android:background="?attr/colorPrimary"
+        android:layout_height="200dp">
 
-        <include layout="@layout/toolbar"
+        <android.support.design.widget.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:id="@+id/toolbar"/>
+            android:layout_height="match_parent"
+            app:contentScrim="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorPrimary"
+                app:titleTextColor="@color/white"
+                app:layout_collapseMode="pin">
+
+
+                <ImageView
+                    android:id="@+id/ic_listStore"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_list_store"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ic_mapStore"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_map"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ic_filter"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_filter"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ic_notification_off"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_notification_off"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/ic_notification_on"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_notification_on"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+            </android.support.v7.widget.Toolbar>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -22,7 +82,6 @@
         android:id="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-    </FrameLayout>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

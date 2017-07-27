@@ -2,6 +2,7 @@ package br.com.savingfood.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -39,6 +40,7 @@ public class StoreListFragment extends Fragment {
     private List<Store> storeList;
     private Toolbar toolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private AppBarLayout appBarLayout;
 
 
     @Nullable
@@ -53,9 +55,12 @@ public class StoreListFragment extends Fragment {
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle("Lojas nas proximidades");
+        toolbar.setTitle("Lojas próximas");
 
         Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+        appBarLayout.setExpanded(true,true);
 
         mIconMapImageView = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
         mIconMapImageView.setOnClickListener(new View.OnClickListener() {

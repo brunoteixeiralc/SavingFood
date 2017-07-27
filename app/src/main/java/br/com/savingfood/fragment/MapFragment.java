@@ -4,6 +4,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
@@ -71,6 +72,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     private FirebaseAnalytics mFirebaseAnalytics;
     private boolean findAllProduct = true;
     private List<Product> products = new ArrayList<>();
+    private AppBarLayout appBarLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,9 +97,12 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle("Lojas nas proximidades");
+        toolbar.setTitle("Lojas próximas");
 
         Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+        appBarLayout.setExpanded(false);
 
         mIconListImageView = (ImageView) toolbar.findViewById(R.id.ic_listStore);
         mIconListImageView.setOnClickListener(new View.OnClickListener() {
