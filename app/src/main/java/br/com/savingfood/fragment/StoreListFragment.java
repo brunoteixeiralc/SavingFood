@@ -57,10 +57,7 @@ public class StoreListFragment extends Fragment {
 
         Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
 
-        mIconListImageView = (ImageView) toolbar.findViewById(R.id.ic_listStore);
-
         mIconMapImageView = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
-        mIconMapImageView.setVisibility(View.VISIBLE);
         mIconMapImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,8 +66,7 @@ public class StoreListFragment extends Fragment {
 
                 if(fragment != null) {
                     getFragmentManager().popBackStack();
-                    mIconMapImageView.setVisibility(View.GONE);
-                    mIconListImageView.setVisibility(View.VISIBLE);
+                    Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
                 }
 
                 Bundle params = new Bundle();

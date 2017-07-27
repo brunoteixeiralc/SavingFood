@@ -106,6 +106,8 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         toolbar.setVisibility(View.VISIBLE);
         toolbar.setTitle(store.getNetwork());
 
+        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
+
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,8 +115,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                  abrirBottomSheerFilter();
             }
         });
-
-        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
 
         name = (TextView) view.findViewById(R.id.name);
         address = (TextView) view.findViewById(R.id.address);
@@ -274,10 +274,16 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
                     for (DataSnapshot st : dataSnapshot.getChildren()) {
 
-                        Product product = st.getValue(Product.class);
-                        product.setFieldToFilter(node);
-                        product.setUid(st.getKey());
-                        products.add(product);
+                        DataSnapshot storesSnap = st.child("stores");
+                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
+                            if(sSnap.getKey().equalsIgnoreCase(store.getKeyStore())){
+                                Product product = st.getValue(Product.class);
+                                product.setFieldToFilter(node);
+                                product.setUid(st.getKey());
+                                products.add(product);
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -294,7 +300,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                 }
 
                 dialog.dismiss();
-
                 Utils.closeDialog(DetailStoreFragment.this.getContext());
             }
 

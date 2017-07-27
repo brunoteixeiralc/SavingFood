@@ -112,7 +112,6 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                 if(fragment != null) {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
-                    mIconListImageView.setVisibility(View.GONE);
                 }
 
                 Bundle params = new Bundle();
