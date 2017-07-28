@@ -97,7 +97,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle("Lojas próximas");
+        toolbar.setTitle("Lojas Próximas");
 
         Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
 

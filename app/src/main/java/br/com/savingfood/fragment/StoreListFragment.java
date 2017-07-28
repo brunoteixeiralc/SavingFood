@@ -36,12 +36,11 @@ public class StoreListFragment extends Fragment {
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private Fragment fragment;
-    private ImageView mIconMapImageView,mIconListImageView;
+    private ImageView mIconMapImageView,img_bg;
     private List<Store> storeList;
     private Toolbar toolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
     private AppBarLayout appBarLayout;
-
 
     @Nullable
     @Override
@@ -55,9 +54,12 @@ public class StoreListFragment extends Fragment {
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle("Lojas próximas");
+        toolbar.setTitle("Lojas Próximas");
 
         Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
+
+        img_bg = (ImageView) getActivity().findViewById(R.id.img);
+        img_bg.setImageResource(R.drawable.img_loja_proxima);
 
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(true,true);
@@ -72,6 +74,9 @@ public class StoreListFragment extends Fragment {
                 if(fragment != null) {
                     getFragmentManager().popBackStack();
                     Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+
+                    appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+                    appBarLayout.setExpanded(false,true);
                 }
 
                 Bundle params = new Bundle();

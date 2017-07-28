@@ -56,8 +56,6 @@ public class ProductDetailFragment extends Fragment {
         price_to = (TextView) view.findViewById(R.id.price_to);
         quantity = (TextView) view.findViewById(R.id.quantity);
         description = (TextView) view.findViewById(R.id.description);
-        img = (ImageView) view.findViewById(R.id.img);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress);
 
         product = (Product) getArguments().getSerializable("product");
 
@@ -71,6 +69,9 @@ public class ProductDetailFragment extends Fragment {
         toolbar.setTitle(product.getName());
 
         Utils.setIconBar(EnumToolBar.PRODUCTDETAIL,toolbar);
+
+        img = (ImageView) getActivity().findViewById(R.id.img);
+        img.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         mIcon_notification_on = (ImageView) toolbar.findViewById(R.id.ic_notification_on);
         mIcon_notification_on.setOnClickListener(new View.OnClickListener() {
@@ -134,12 +135,11 @@ public class ProductDetailFragment extends Fragment {
 
                 @Override
                 public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    progressBar.setVisibility(View.GONE);
                     return false;
                 }
             }).diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
         }else{
-            progressBar.setVisibility(View.GONE);
+
         }
 
         return view;

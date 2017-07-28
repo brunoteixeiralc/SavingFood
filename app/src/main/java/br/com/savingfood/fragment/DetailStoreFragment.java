@@ -19,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -43,7 +42,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import br.com.savingfood.R;
@@ -63,12 +61,11 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private View view;
     protected RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
-    private Store store,productStore;
+    private Store store;
     private SupportMapFragment mapFragment;
     private Fragment fragment;
     private RecyclerView.Adapter mAdapter;
     private TextView name,address,distance;
-    private ProgressBar progressBar;
     public ImageView img, mIconFilter;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
@@ -104,7 +101,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle(store.getNetwork());
+        toolbar.setTitle("");
 
         Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
 
@@ -119,8 +116,8 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         name = (TextView) view.findViewById(R.id.name);
         address = (TextView) view.findViewById(R.id.address);
         distance = (TextView) view.findViewById(R.id.km);
-        progressBar = (ProgressBar) view.findViewById(R.id.progress);
-        img = (ImageView) view.findViewById(R.id.img);
+
+        img = (ImageView) getActivity().findViewById(R.id.img);
         Glide.with(DetailStoreFragment.this.getContext()).load(store.getImg()).listener(new RequestListener<String, GlideDrawable>() {
             @Override
             public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -129,7 +126,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
             @Override
             public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                progressBar.setVisibility(View.GONE);
                 return false;
             }
         }).diskCacheStrategy(DiskCacheStrategy.ALL).into(img);
