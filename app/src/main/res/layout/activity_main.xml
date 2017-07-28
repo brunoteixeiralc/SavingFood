@@ -24,12 +24,23 @@
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <ImageView
-                android:id="@+id/img"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:layout_collapseMode="parallax"
-                android:scaleType="fitXY"/>
+                android:layout_height="match_parent" >
+
+                <ImageView
+                    android:id="@+id/img"
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    app:layout_collapseMode="parallax"
+                    android:scaleType="fitXY"/>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_bg"/>
+
+            </FrameLayout>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"

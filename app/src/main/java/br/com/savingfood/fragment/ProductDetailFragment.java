@@ -51,7 +51,7 @@ public class ProductDetailFragment extends Fragment {
 
         view = inflater.inflate(R.layout.content_product_detail, container, false);
 
-        name = (TextView) view.findViewById(R.id.name);
+        //name = (TextView) view.findViewById(R.id.name);
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
         quantity = (TextView) view.findViewById(R.id.quantity);
@@ -121,7 +121,7 @@ public class ProductDetailFragment extends Fragment {
             }
         });
 
-        name.setText(product.getName());
+        //name.setText(product.getName());
         price_from.setText("R$ " + product.getOld_price());
         price_to.setText("para R$ " + product.getPrice());
         description.setText(product.getDescription());
