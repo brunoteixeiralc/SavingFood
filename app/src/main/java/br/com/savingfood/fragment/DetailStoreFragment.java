@@ -2,6 +2,7 @@ package br.com.savingfood.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -72,6 +73,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private List<Product> products = new ArrayList<>();
     private BottomSheetDialog dialog;
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
+    private AppBarLayout appBarLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -104,6 +106,9 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
         toolbar.setTitle("");
 
         Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+        appBarLayout.setExpanded(true,true);
 
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {

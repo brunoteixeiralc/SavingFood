@@ -15,10 +15,10 @@
     android:textSize="30dp"/>
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:orientation="vertical">
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"
@@ -29,10 +29,10 @@
                 android:id="@+id/email_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="2"
-                android:maxLines="4"
                 android:hint="@string/login_email"
-                android:textColor="@color/white"/>
+                android:maxLines="4"
+                android:minLines="2"
+                android:textColor="@color/white" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -45,10 +45,10 @@
                 android:id="@+id/pass_login"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minLines="2"
-                android:maxLines="4"
                 android:hint="@string/pass_login"
-                android:textColor="@color/white"/>
+                android:maxLines="4"
+                android:minLines="2"
+                android:textColor="@color/white" />
 
         </android.support.design.widget.TextInputLayout>
 
@@ -56,53 +56,53 @@
             android:id="@+id/btn_enter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_bg"
             android:text="Entrar"
-            android:textColor="@color/white"
-            android:background="@color/colorPrimaryDark" />
+            android:textColor="@color/white" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sem conta? Crie uma agora."
             android:gravity="center_horizontal"
-            android:textColor="@color/white"
-            android:padding="10dp"/>
+            android:padding="10dp"
+            android:text="Sem conta? Crie uma agora."
+            android:textColor="@color/white" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp"
-            android:gravity="center">
+            android:padding="10dp">
 
             <View
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="1dp"
-                android:background="@color/white"/>
+                android:layout_weight="1"
+                android:background="@color/white" />
 
             <TextView
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal|top"
                 android:text="ou"
-                android:textColor="@color/white"
-                android:gravity="center_horizontal|top"/>
+                android:textColor="@color/white" />
 
             <View
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="1dp"
-                android:background="@color/white"/>
+                android:layout_weight="1"
+                android:background="@color/white" />
 
         </LinearLayout>
 
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/rounded_fb_bg"
             android:text="Entrar com Facebook"
-            android:textColor="@color/white"
-            android:background="@color/colorfacebook"/>
+            android:textColor="@color/white" />
 
     </LinearLayout>
 

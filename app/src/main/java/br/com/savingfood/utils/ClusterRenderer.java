@@ -53,7 +53,7 @@ public class ClusterRenderer extends DefaultClusterRenderer<ClusterMarkerLocatio
     protected void onBeforeClusterRendered(Cluster<ClusterMarkerLocation> cluster, MarkerOptions markerOptions) {
 
 //        mClusterIconGenerator.setBackground(
-//                ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.circle_background));
+//                ContextCompat.getDrawable(context.getApplicationContext(), R.drawable.circle_bg));
 //        mClusterIconGenerator.setTextAppearance(R.style.AppTheme_WhiteTextAppearance);
 
 //        final Bitmap icon = mClusterIconGenerator.makeIcon(String.valueOf(cluster.getSize()));
