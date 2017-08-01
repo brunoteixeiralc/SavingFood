@@ -48,6 +48,22 @@ public class StoreListFragment extends Fragment {
 
         view = inflater.inflate(R.layout.list, container, false);
 
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        appBarLayout.setExpanded(false,true);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
 
         storeList = (List<Store>) getArguments().getSerializable("stores");
@@ -69,13 +85,10 @@ public class StoreListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                fragment = new MapFragment();
-
                 if(fragment != null) {
                     getFragmentManager().popBackStack();
                     Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
 
-                    appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
                     appBarLayout.setExpanded(false,true);
                 }
 

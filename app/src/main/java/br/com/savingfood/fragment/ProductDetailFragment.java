@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -21,6 +20,10 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import br.com.savingfood.R;
 import br.com.savingfood.firebase.FirebaseServices;
@@ -37,13 +40,13 @@ import br.com.savingfood.utils.Utils;
 public class ProductDetailFragment extends Fragment {
 
     private View view;
-    private TextView name,description,price_from,price_to,quantity;;
+    private TextView description,price_from,price_to,quantity,days_left;
     private ImageView img,mIcon_notification_on,mIcon_notification_off;
     private Product product;
-    private ProgressBar progressBar;
     private Toolbar toolbar;
     private DatabaseReference mDatabase;
     private FirebaseAnalytics mFirebaseAnalytics;
+    private Date d_date;
 
     @Nullable
     @Override
@@ -51,13 +54,20 @@ public class ProductDetailFragment extends Fragment {
 
         view = inflater.inflate(R.layout.content_product_detail, container, false);
 
-        //name = (TextView) view.findViewById(R.id.name);
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
         quantity = (TextView) view.findViewById(R.id.quantity);
         description = (TextView) view.findViewById(R.id.description);
+        days_left = (TextView) view.findViewById(R.id.days_left);
 
         product = (Product) getArguments().getSerializable("product");
+
+        try {
+            d_date =  new SimpleDateFormat("dd/MM/yyyy").parse(product.getDue_date());
+            days_left.setText(String.valueOf(remainDays(new Date(),d_date)) + " dias");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(ProductDetailFragment.this.getContext());
 
@@ -121,7 +131,6 @@ public class ProductDetailFragment extends Fragment {
             }
         });
 
-        //name.setText(product.getName());
         price_from.setText("R$ " + product.getOld_price());
         price_to.setText("para R$ " + product.getPrice());
         description.setText(product.getDescription());
@@ -143,6 +152,10 @@ public class ProductDetailFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private long remainDays(Date d1 , Date d2){
+        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
 }
 
