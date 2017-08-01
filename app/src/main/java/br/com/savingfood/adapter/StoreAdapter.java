@@ -1,6 +1,8 @@
 package br.com.savingfood.adapter;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +11,18 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 import java.text.DecimalFormat;
 import java.util.List;
 
 import br.com.savingfood.R;
 import br.com.savingfood.model.Store;
+import br.com.savingfood.utils.Utils;
 
 
 /**
@@ -63,18 +68,20 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         holder.distance.setText(String.valueOf(df.format(s.getDistance()) + " km"));
         holder.name.setText(s.getName());
         holder.address.setText(s.getAddress());
-        Glide.with(context).load(s.getImg()).listener(new RequestListener<String, GlideDrawable>() {
+
+        RequestOptions myOptions = new RequestOptions().circleCrop().diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(context).load(s.getImg()).apply(myOptions).listener(new RequestListener<Drawable>() {
             @Override
-            public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Drawable> target, boolean b) {
                 return false;
             }
 
             @Override
-            public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            public boolean onResourceReady(Drawable drawable, Object o, Target<Drawable> target, DataSource dataSource, boolean b) {
                 holder.progressBar.setVisibility(View.GONE);
                 return false;
             }
-        }).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.img);
+        }).into(holder.img);
 
         if (storeOnClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -99,11 +106,11 @@ public class StoreAdapter extends RecyclerView.Adapter<StoreAdapter.StoreViewHol
         public StoreViewHolder(View view) {
             super(view);
 
-          name = (TextView) view.findViewById(R.id.name);
-          distance = (TextView) view.findViewById(R.id.distance);
-          address = (TextView) view.findViewById(R.id.address);
-          img = (ImageView) view.findViewById(R.id.img);
-          progressBar = (ProgressBar) view.findViewById(R.id.progress);
+            name = (TextView) view.findViewById(R.id.name);
+            distance = (TextView) view.findViewById(R.id.distance);
+            address = (TextView) view.findViewById(R.id.address);
+            img = (ImageView) view.findViewById(R.id.img);
+            progressBar = (ProgressBar) view.findViewById(R.id.progress);
 
         }
     }

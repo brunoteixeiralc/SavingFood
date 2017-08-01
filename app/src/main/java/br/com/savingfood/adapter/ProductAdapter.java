@@ -2,6 +2,8 @@ package br.com.savingfood.adapter;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,9 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
 
 import java.math.BigDecimal;
@@ -68,18 +72,18 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
        holder.price_from.setText(Money.reais(new BigDecimal(p.getOld_price(), MathContext.DECIMAL64)).toString());
         holder.price_to.setText("para " + Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
        if(p.getImg() != null){
-           Glide.with(context).load(p.getImg()).listener(new RequestListener<String, GlideDrawable>() {
+           Glide.with(context).load(p.getImg()).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL)).listener(new RequestListener<Drawable>() {
                @Override
-               public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+               public boolean onLoadFailed(@Nullable GlideException e, Object o, Target<Drawable> target, boolean b) {
                    return false;
                }
 
                @Override
-               public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+               public boolean onResourceReady(Drawable drawable, Object o, Target<Drawable> target, DataSource dataSource, boolean b) {
                    holder.progressBar.setVisibility(View.GONE);
                    return false;
                }
-           }).diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.img);
+           }).into(holder.img);
 
        }else{
            holder.progressBar.setVisibility(View.GONE);

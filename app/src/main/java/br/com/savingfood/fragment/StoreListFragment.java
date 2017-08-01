@@ -85,12 +85,10 @@ public class StoreListFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if(fragment != null) {
-                    getFragmentManager().popBackStack();
-                    Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+                getFragmentManager().popBackStack();
+                Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
 
-                    appBarLayout.setExpanded(false,true);
-                }
+                appBarLayout.setExpanded(false,true);
 
                 Bundle params = new Bundle();
                 params.putString("icon_click", "ic_map");
