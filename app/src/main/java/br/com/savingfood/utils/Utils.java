@@ -31,7 +31,7 @@ public final class Utils {
 
     private static SimpleArcDialog simpleArcDialog;
     private static ArcConfiguration arcConfiguration;
-    private static ImageView mIconList,mIconMap,mIconFilter,mIconNotificationOff,mIconNotificationOn;
+    private static ImageView mIconList,mIconMap,mIconFilter,mIconNotificationOff,mIconNotificationOn,mIconRoute;
 
     public static void hideKeyboard(Activity activity) {
         View view = activity.getCurrentFocus();
@@ -108,12 +108,14 @@ public final class Utils {
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconNotificationOff = (ImageView) toolbar.findViewById(R.id.ic_notification_off);
         mIconNotificationOn = (ImageView) toolbar.findViewById(R.id.ic_notification_on);
+        mIconRoute = (ImageView) toolbar.findViewById(R.id.ic_route);
 
         mIconList.setVisibility(View.GONE);
         mIconMap.setVisibility(View.GONE);
         mIconFilter.setVisibility(View.GONE);
         mIconNotificationOff.setVisibility(View.GONE);
         mIconNotificationOn.setVisibility(View.GONE);
+        mIconRoute.setVisibility(View.GONE);
 
         switch (enumIconBar){
             case STORELIST:{
@@ -126,6 +128,7 @@ public final class Utils {
             }
             case STOREDETAIL: {
                 mIconFilter.setVisibility(View.VISIBLE);
+                mIconRoute.setVisibility(View.VISIBLE);
                 break;
             }
             case PRODUCTDETAIL: {

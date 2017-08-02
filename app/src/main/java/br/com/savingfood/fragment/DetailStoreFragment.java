@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -60,13 +61,12 @@ import br.com.savingfood.utils.Utils;
  * Created by brunolemgruber on 15/07/16.
  */
 
-public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,SearchView.OnQueryTextListener{
+public class DetailStoreFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private View view;
     protected RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private Store store;
-    private SupportMapFragment mapFragment;
     private Fragment fragment;
     private RecyclerView.Adapter mAdapter;
     private TextView name,address,distance;
@@ -77,6 +77,7 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
     private BottomSheetDialog dialog;
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
+    private LottieAnimationView animationView;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -112,6 +113,8 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(true,true);
+
+        animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
 
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {
@@ -157,9 +160,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
 
         }
 
-        mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        mapFragment.getMapAsync(DetailStoreFragment.this);
-
         return view;
     }
 
@@ -183,15 +183,6 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                         return true;
                     }
                 });
-    }
-
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(store.getLat(),store.getLng())));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(store.getLat(),store.getLng()), 5f);
-        googleMap.moveCamera(cameraUpdate);
     }
 
     @Override
@@ -230,10 +221,15 @@ public class DetailStoreFragment extends Fragment implements OnMapReadyCallback,
                 }
 
                 if(products.size() != 0){
+                    animationView.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
                     recyclerView.setAdapter(mAdapter);
 
+                }else{
+                    recyclerView.setVisibility(View.GONE);
+                    animationView.setVisibility(View.VISIBLE);
+                    animationView.playAnimation();
                 }
 
                 Utils.closeDialog(DetailStoreFragment.this.getContext());

@@ -76,6 +76,15 @@
                     android:visibility="gone"/>
 
                 <ImageView
+                    android:id="@+id/ic_route"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_route"
+                    android:layout_gravity="right"
+                    android:layout_marginRight="15dp"
+                    android:visibility="gone"/>
+
+                <ImageView
                     android:id="@+id/ic_notification_off"
                     android:layout_width="30dp"
                     android:layout_height="30dp"

@@ -9,6 +9,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,21 +49,23 @@ public class StoreListFragment extends Fragment {
 
         view = inflater.inflate(R.layout.list, container, false);
 
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (i == KeyEvent.KEYCODE_BACK) {
-//                        getFragmentManager().popBackStack();
-//                        appBarLayout.setExpanded(false,true);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_BACK) {
+                        getFragmentManager().popBackStack();
+                        Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+
+                        appBarLayout.setExpanded(false,true);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
 
