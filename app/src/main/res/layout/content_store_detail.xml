@@ -80,16 +80,39 @@
             android:listSelector="@android:color/transparent"
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="vertical"
-            android:visibility="visible"/>
+            android:visibility="gone"
+            />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/animation_view"
+        <LinearLayout
+            android:id="@+id/ll_store_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone"
             android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:lottie_fileName="shrug.json"
-            app:lottie_loop="false"
-            app:lottie_autoPlay="true"
-            android:visibility="gone"/>
+            android:gravity="center">
+
+            <TextView
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.2"
+                android:text="Desculpe, não encontramos nenhum produto."
+                android:textSize="14sp"
+                android:gravity="center"
+                android:minLines="2"/>
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/animation_view"
+                android:layout_gravity="top"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                app:lottie_fileName="shrug.json"
+                app:lottie_loop="true"
+                app:lottie_autoPlay="false"/>
+
+        </LinearLayout>
 
     </LinearLayout>

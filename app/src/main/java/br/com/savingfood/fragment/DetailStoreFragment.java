@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -78,6 +79,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
     private LottieAnimationView animationView;
+    private LinearLayout linearLayout;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,6 +116,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(true,true);
 
+        linearLayout = (LinearLayout) view.findViewById(R.id.ll_store_detail);
         animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
 
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
@@ -221,14 +224,14 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                 }
 
                 if(products.size() != 0){
-                    animationView.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
                     mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
                     recyclerView.setAdapter(mAdapter);
 
                 }else{
                     recyclerView.setVisibility(View.GONE);
-                    animationView.setVisibility(View.VISIBLE);
+                    linearLayout.setVisibility(View.VISIBLE);
                     animationView.playAnimation();
                 }
 
