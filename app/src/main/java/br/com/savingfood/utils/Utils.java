@@ -126,6 +126,9 @@ public final class Utils {
                 mIconList.setVisibility(View.VISIBLE);
                 break;
             }
+            case STOREMAPDIRECTIONS: {
+                break;
+            }
             case STOREDETAIL: {
                 mIconFilter.setVisibility(View.VISIBLE);
                 mIconRoute.setVisibility(View.VISIBLE);

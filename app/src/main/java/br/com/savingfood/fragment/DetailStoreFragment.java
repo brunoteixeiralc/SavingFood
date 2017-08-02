@@ -71,7 +71,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
     private Fragment fragment;
     private RecyclerView.Adapter mAdapter;
     private TextView name,address,distance;
-    public ImageView img, mIconFilter;
+    public ImageView img, mIconFilter,mIconRoute;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
     private List<Product> products = new ArrayList<>();
@@ -124,6 +124,16 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
             @Override
             public void onClick(View view) {
                  abrirBottomSheerFilter();
+            }
+        });
+
+        mIconRoute = (ImageView) toolbar.findViewById(R.id.ic_route);
+        mIconRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragment = new MapDirectionsFragment();
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         });
 

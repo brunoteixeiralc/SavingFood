@@ -7,6 +7,7 @@ package br.com.savingfood.utils;
 public enum EnumToolBar {
 
     STOREMAP,
+    STOREMAPDIRECTIONS,
     STORELIST,
     STOREDETAIL,
     PRODUCTDETAIL
