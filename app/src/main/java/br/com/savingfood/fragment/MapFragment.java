@@ -1,5 +1,8 @@
 package br.com.savingfood.fragment;
 
+import android.content.SharedPreferences;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +16,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -24,7 +26,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,11 +37,13 @@ import com.google.maps.android.clustering.ClusterManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import br.com.savingfood.R;
 import br.com.savingfood.model.ClusterMarkerLocation;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
+import br.com.savingfood.utils.Config;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
 import permissions.dispatcher.NeedsPermission;
@@ -138,6 +141,13 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     private void setUpMap(Location l) {
 
         if (gMap != null && l != null) {
+
+            String address =  getCompleteAddressString(l.getLatitude(),l.getLongitude());
+
+            SharedPreferences pref = MapFragment.this.getContext().getSharedPreferences(Config.SHARED_PREF, 0);
+            SharedPreferences.Editor editor = pref.edit();
+            editor.putString("actual_address", address);
+            editor.commit();
 
             Utils.openDialog(MapFragment.this.getContext(),"Carregando lojas");
 
@@ -258,10 +268,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
         gMap.setOnCameraIdleListener(clusterManager);
         gMap.setOnMarkerClickListener(clusterManager);
         gMap.setOnInfoWindowClickListener(clusterManager);
-        //gMap.setInfoWindowAdapter(clusterManager.getMarkerManager());
 
-        //clusterManager.getMarkerCollection().setOnInfoWindowAdapter(new ClusterMarkerLocationAdapter());
-        //clusterManager.setRenderer(new ClusterRenderer(MapFragment.this.getContext(),gMap,clusterManager));
         if(storeList == null || storeList.size() == 0)
             getStores(clusterManager,l);
 
@@ -281,27 +288,28 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
     }
 
-    public class ClusterMarkerLocationAdapter implements GoogleMap.InfoWindowAdapter{
+    private String getCompleteAddressString(double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(MapFragment.this.getContext(), Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
 
-        private final View view;
-
-        ClusterMarkerLocationAdapter() {
-            view = getActivity().getLayoutInflater().inflate(R.layout.info_windows_map, null);
+                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+                Log.w("My Current location", "" + strReturnedAddress.toString());
+            } else {
+                Log.w("My Current location", "No Address returned!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.w("My Current location", "Cannot get Address!");
         }
-
-        @Override
-        public View getInfoWindow(Marker marker) {
-
-            TextView title = (TextView) view.findViewById(R.id.txtTitle);
-            title.setText(clickedClusterItem.getTitle());
-
-            return view;
-        }
-
-        @Override
-        public View getInfoContents(Marker marker) {
-            return null;
-        }
+        return strAdd;
     }
 
     private void getStores(final ClusterManager<ClusterMarkerLocation> clManager, final Location l){

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,7 @@ import br.com.savingfood.R;
 import br.com.savingfood.firebase.FirebaseServices;
 import br.com.savingfood.model.Alert;
 import br.com.savingfood.model.Product;
+import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.Config;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
@@ -50,6 +52,7 @@ public class ProductDetailFragment extends Fragment {
     private DatabaseReference mDatabase;
     private FirebaseAnalytics mFirebaseAnalytics;
     private Date d_date;
+    private Store store;
 
     @Nullable
     @Override
@@ -57,13 +60,35 @@ public class ProductDetailFragment extends Fragment {
 
         view = inflater.inflate(R.layout.content_product_detail, container, false);
 
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_BACK) {
+                        getFragmentManager().popBackStack();
+                        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
+                        toolbar.setTitle("");
+
+                        Glide.with(ProductDetailFragment.this.getContext()).load(store.getImg()).into(img);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
         quantity = (TextView) view.findViewById(R.id.quantity);
         description = (TextView) view.findViewById(R.id.description);
         days_left = (TextView) view.findViewById(R.id.days_left);
 
-        product = (Product) getArguments().getSerializable("product");
+        if(getArguments() != null){
+            product = (Product) getArguments().getSerializable("product");
+            store = (Store) getArguments().getSerializable("store");
+        }
 
         try {
             d_date =  new SimpleDateFormat("dd/MM/yyyy").parse(product.getDue_date());

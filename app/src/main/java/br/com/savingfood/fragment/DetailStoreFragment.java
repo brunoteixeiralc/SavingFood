@@ -32,13 +32,6 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.request.target.Target;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -132,8 +125,12 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
             @Override
             public void onClick(View view) {
                 fragment = new MapDirectionsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("destination",store.getAddress());
+                fragment.setArguments(bundle);
+
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         });
 
@@ -264,11 +261,12 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                 Product product = products.get(idx);
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("product",product);
+                bundle.putSerializable("store",store);
 
                 fragment = new ProductDetailFragment();
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
     }

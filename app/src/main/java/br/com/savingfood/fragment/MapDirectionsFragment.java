@@ -1,43 +1,28 @@
 package br.com.savingfood.fragment;
 
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.android.PolyUtil;
-import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.DirectionsRoute;
@@ -46,19 +31,13 @@ import com.google.maps.model.TravelMode;
 import org.joda.time.DateTime;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import br.com.savingfood.R;
-import br.com.savingfood.model.ClusterMarkerLocation;
-import br.com.savingfood.model.Product;
-import br.com.savingfood.model.Store;
+import br.com.savingfood.utils.Config;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 import static br.com.savingfood.R.id.map;
 
@@ -66,7 +45,7 @@ import static br.com.savingfood.R.id.map;
 /**
  * Created by brunolemgruber on 30/01/15.
  */
-public class MapDirectionsFragment extends Fragment implements com.google.android.gms.maps.OnMapReadyCallback {
+public class MapDirectionsFragment extends Fragment implements com.google.android.gms.maps.OnMapReadyCallback,com.google.android.gms.location.LocationListener{
 
     private View view;
     private SupportMapFragment mapFragment;
@@ -74,6 +53,7 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
     private FirebaseAnalytics mFirebaseAnalytics;
     private AppBarLayout appBarLayout;
     private static final int overview = 0;
+    private String address_destination;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -88,41 +68,39 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
         } catch (InflateException e) {
         }
 
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+                    if (i == KeyEvent.KEYCODE_BACK) {
+                        getFragmentManager().popBackStack();
+                        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
+                        toolbar.setTitle("");
+
+                        appBarLayout.setExpanded(true,true);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+        appBarLayout.setExpanded(false,true);
+
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(MapDirectionsFragment.this.getContext());
 
         if(getArguments() != null) {
-            //products = (List<Product>) getArguments().getSerializable("products");
+            address_destination = getArguments().getString("destination");
         }
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
-        toolbar.setTitle("Como ir para");
+        toolbar.setTitle("Calculando rota...");
 
         Utils.setIconBar(EnumToolBar.STOREMAPDIRECTIONS,toolbar);
-
-        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
-        appBarLayout.setExpanded(false);
-
-//        mIconListImageView = (ImageView) toolbar.findViewById(R.id.ic_listStore);
-//        mIconListImageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                fragment = new StoreListFragment();
-//                bundle = new Bundle();
-//                bundle.putSerializable("stores", (Serializable) storeList);
-//                fragment.setArguments(bundle);
-//
-//                if(fragment != null) {
-//                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                    transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
-//                }
-//
-//                Bundle params = new Bundle();
-//                params.putString("icon_click", "ic_list");
-//                mFirebaseAnalytics.logEvent("type_view_store", params);
-//            }
-//        });
 
         mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(map);
         mapFragment.getMapAsync(MapDirectionsFragment.this);
@@ -139,7 +117,8 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
     @Override
     public void onMapReady(GoogleMap googleMap) {
         setupGoogleMapScreenSettings(googleMap);
-        DirectionsResult results = getDirectionsDetails("483 George St, Sydney NSW 2000, Australia","182 Church St, Parramatta NSW 2150, Australia",TravelMode.DRIVING);
+        SharedPreferences pref = view.getContext().getSharedPreferences(Config.SHARED_PREF, 0);
+        DirectionsResult results = getDirectionsDetails(pref.getString("actual_address", ""),address_destination,TravelMode.DRIVING);
         if (results != null) {
             addPolyline(results, googleMap);
             positionCamera(results.routes[overview], googleMap);
@@ -162,7 +141,10 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
     }
 
     private String getEndLocationTitle(DirectionsResult results){
-        return  "Tempo :"+ results.routes[overview].legs[overview].duration.humanReadable + " Distância :" + results.routes[overview].legs[overview].distance.humanReadable;
+        String time = results.routes[overview].legs[overview].duration.humanReadable;
+        String distance = results.routes[overview].legs[overview].distance.humanReadable;
+        toolbar.setTitle(time + " - " + distance);
+        return  "Tempo: "+ time + " Distância: " + distance;
     }
 
     private DirectionsResult getDirectionsDetails(String origin, String destination, TravelMode mode) {
@@ -205,8 +187,13 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
         return geoApiContext
                 .setQueryRateLimit(3)
                 .setApiKey(getString(R.string.google_maps_api_key))
-                .setConnectTimeout(1, TimeUnit.SECONDS)
-                .setReadTimeout(1, TimeUnit.SECONDS)
-                .setWriteTimeout(1, TimeUnit.SECONDS);
+                .setConnectTimeout(15, TimeUnit.SECONDS)
+                .setReadTimeout(15, TimeUnit.SECONDS)
+                .setWriteTimeout(15, TimeUnit.SECONDS);
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
     }
 }

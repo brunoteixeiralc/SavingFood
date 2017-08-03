@@ -54,7 +54,7 @@ exports.sendAlertPush = functions.database.ref('/product/{uid}/').onWrite(event 
 	
 	  	let payload = {
 				notification: {
-			    title: 'Saving Food - Alerta',
+			    title: 'Saving Foods - Alerta',
 			    body: productName + ' na lista.',
 			    sound: 'default',
 			    badge: '1'
