@@ -114,6 +114,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                 fragment = new StoreListFragment();
                 bundle = new Bundle();
                 bundle.putSerializable("stores", (Serializable) storeList);
+                bundle.putSerializable("products", (Serializable) products);
                 fragment.setArguments(bundle);
 
                 if(fragment != null) {
@@ -278,6 +279,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("store",clusterMarkerLocation.getStore());
+                bundle.putSerializable("products", (Serializable) products);
 
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);

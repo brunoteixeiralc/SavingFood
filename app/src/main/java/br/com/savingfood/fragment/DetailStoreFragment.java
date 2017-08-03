@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,12 +68,13 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
     public ImageView img, mIconFilter,mIconRoute;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products;
     private BottomSheetDialog dialog;
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
     private LottieAnimationView animationView;
     private LinearLayout linearLayout;
+    private Button btnSeeAll;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,9 +98,21 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
         } catch (InflateException e) {
         }
 
-        store = (Store) getArguments().getSerializable("store");
+        if(getArguments() != null){
+            store = (Store) getArguments().getSerializable("store");
+            products = (List<Product>) getArguments().getSerializable("products");
+        }
 
-        getProducts();
+        if(recyclerView == null){
+
+            recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+            mLayoutManager = new LinearLayoutManager(DetailStoreFragment.this.getActivity());
+            recyclerView.setLayoutManager(mLayoutManager);
+            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            recyclerView.setHasFixedSize(true);
+            recyclerView.addItemDecoration(new DividerItemDecoration(DetailStoreFragment.this.getContext(),LinearLayoutManager.VERTICAL));
+
+        }
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -111,6 +125,14 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
         linearLayout = (LinearLayout) view.findViewById(R.id.ll_store_detail);
         animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
+
+        btnSeeAll = (Button) view.findViewById(R.id.btn_see_all);
+        btnSeeAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +155,20 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                 transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         });
+
+        if(products == null){
+            btnSeeAll.setVisibility(View.GONE);
+            products = new ArrayList<>();
+            getProducts();
+
+        }else{
+            btnSeeAll.setVisibility(View.VISIBLE);
+            linearLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+            mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+            recyclerView.setAdapter(mAdapter);
+            Utils.closeDialog(DetailStoreFragment.this.getContext());
+        }
 
         name = (TextView) view.findViewById(R.id.name);
         address = (TextView) view.findViewById(R.id.address);
@@ -158,17 +194,6 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
         df.setMaximumFractionDigits(2);
 
         distance.setText(String.valueOf(df.format(store.getDistance())) + " km");
-
-        if(recyclerView == null){
-
-            recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-            mLayoutManager = new LinearLayoutManager(DetailStoreFragment.this.getActivity());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setHasFixedSize(true);
-            recyclerView.addItemDecoration(new DividerItemDecoration(DetailStoreFragment.this.getContext(),LinearLayoutManager.VERTICAL));
-
-        }
 
         return view;
     }

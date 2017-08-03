@@ -66,8 +66,6 @@
 
             </LinearLayout>
 
-        </LinearLayout>
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:padding="8dp"
@@ -75,13 +73,22 @@
             android:layout_height="match_parent"
             android:cacheColorHint="@android:color/transparent"
             android:clipToPadding="false"
-            android:divider="@null"
+            androiider="@null"
             android:dividerHeight="0dp"
             android:listSelector="@android:color/transparent"
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="vertical"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_see_all"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_bg"
+            android:text="@string/see_others_products"
+            android:textColor="@color/white"
             android:visibility="gone"
-            />
+            android:layout_margin="8dp"/>
 
         <LinearLayout
             android:id="@+id/ll_store_detail"
@@ -112,6 +119,8 @@
                 app:lottie_fileName="shrug.json"
                 app:lottie_loop="true"
                 app:lottie_autoPlay="false"/>
+
+            </LinearLayout>
 
         </LinearLayout>
 

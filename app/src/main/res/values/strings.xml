@@ -14,5 +14,6 @@
     <string name="pass_login">Digite sua senha</string>
     <string name="find_product">Qual produto estaria procurando?</string>
     <string name="no_product">Desculpe, não encontramos nenhum produto.</string>
+    <string name="see_others_products">Ver os outros produtos</string>
 </resources>
 

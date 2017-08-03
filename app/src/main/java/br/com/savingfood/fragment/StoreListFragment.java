@@ -17,10 +17,12 @@ import android.widget.ImageView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.io.Serializable;
 import java.util.List;
 
 import br.com.savingfood.R;
 import br.com.savingfood.adapter.StoreAdapter;
+import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
@@ -42,6 +44,7 @@ public class StoreListFragment extends Fragment {
     private Toolbar toolbar;
     private FirebaseAnalytics mFirebaseAnalytics;
     private AppBarLayout appBarLayout;
+    private List<Product> products;
 
     @Nullable
     @Override
@@ -68,8 +71,6 @@ public class StoreListFragment extends Fragment {
         });
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
-
-        storeList = (List<Store>) getArguments().getSerializable("stores");
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -100,6 +101,11 @@ public class StoreListFragment extends Fragment {
             }
         });
 
+        if(getArguments() != null){
+            storeList = (List<Store>) getArguments().getSerializable("stores");
+            products = (List<Product>) getArguments().getSerializable("products");
+        }
+
         mLayoutManager = new LinearLayoutManager(StoreListFragment.this.getActivity());
         mAdapter = new StoreAdapter(onClickListener(),StoreListFragment.this.getContext(),storeList);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
@@ -127,6 +133,7 @@ public class StoreListFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("store",storeSelected);
+                bundle.putSerializable("products", (Serializable) products);
 
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);
