@@ -92,7 +92,7 @@ public class ProductDetailFragment extends Fragment {
 
         try {
             d_date =  new SimpleDateFormat("dd/MM/yyyy").parse(product.getDue_date());
-            days_left.setText(String.valueOf(remainDays(new Date(),d_date)) + " dias");
+            days_left.setText(String.valueOf(remainDays(new Date(),d_date) + 1) + " dias");
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -184,7 +184,7 @@ public class ProductDetailFragment extends Fragment {
     }
 
     private long remainDays(Date d1 , Date d2){
-        return (int)( (d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+        return (int)((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
 }
 

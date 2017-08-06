@@ -1,6 +1,7 @@
 package br.com.savingfood.fragment;
 
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +51,7 @@ import br.com.savingfood.utils.Utils;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+import static android.content.ContentValues.TAG;
 import static br.com.savingfood.R.id.map;
 
 
@@ -190,6 +193,15 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     @Override
     @NeedsPermission(android.Manifest.permission.ACCESS_FINE_LOCATION)
     public void onMapReady(GoogleMap googleMap) {
+
+        try {
+            boolean success = googleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(MapFragment.this.getContext(), R.raw.style_json));
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
 
         gMap = googleMap;
         MapFragmentPermissionsDispatcher.setlocationWithCheck(this,gMap);
