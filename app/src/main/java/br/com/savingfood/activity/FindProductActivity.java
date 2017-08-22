@@ -84,7 +84,7 @@ public class FindProductActivity extends AppCompatActivity {
 
     private void findProduct(){
 
-        mDatabase.child("product").orderByChild("name").equalTo(txtFindProduct.getText().toString()).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild("name").equalTo(txtFindProduct.getText().toString()).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

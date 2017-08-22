@@ -232,7 +232,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
     private void getProducts(){
 
-        mDatabase.child("product").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -252,6 +252,10 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                                 break;
                             }
                         }
+
+                        //Apresentação Shibata
+                        product.setUid(st.getKey());
+                        products.add(product);
                     }
                 }
 
@@ -300,7 +304,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
         Utils.openDialog(DetailStoreFragment.this.getContext(),"Filtrando");
 
-        mDatabase.child("product").orderByChild(node).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild(node).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 

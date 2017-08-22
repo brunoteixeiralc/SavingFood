@@ -100,7 +100,7 @@ public class ProductDetailFragment extends Fragment {
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(ProductDetailFragment.this.getContext());
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("product").child(product.getUid()).child("views").setValue(product.getViews() + 1);
+        mDatabase.child("discounts").child(product.getUid()).child("views").setValue(product.getViews() + 1);
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
