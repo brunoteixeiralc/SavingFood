@@ -227,7 +227,9 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     @Override
     public void onLocationChanged(Location location) {
 
-        if(locationNow == null || (locationNow.getLatitude() != location.getLatitude() && locationNow.getLongitude() != location.getLongitude())){
+        //Apresentação Shinata
+        //(locationNow.getLatitude() != location.getLatitude() && locationNow.getLongitude() != location.getLongitude())
+        if(locationNow == null){
             locationNow = location;
             setUpMap(location);
         }
@@ -311,7 +313,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                 Address returnedAddress = addresses.get(0);
                 StringBuilder strReturnedAddress = new StringBuilder("");
 
-                for (int i = 0; i < returnedAddress.getMaxAddressLineIndex(); i++) {
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
                     strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
                 }
                 strAdd = strReturnedAddress.toString();
