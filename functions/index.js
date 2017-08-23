@@ -3,7 +3,7 @@ const admin = require('firebase-admin');
 
 admin.initializeApp(functions.config().firebase);
 
-exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>{
+exports.calcPercent = functions.database.ref('/discounts/{uid}/').onWrite(event =>{
 
 	var eventSnapshot = event.data;
 
@@ -28,7 +28,7 @@ exports.calcPercent = functions.database.ref('/product/{uid}/').onWrite(event =>
 
 });
 
-exports.sendAlertPush = functions.database.ref('/product/{uid}/').onWrite(event =>{
+exports.sendAlertPush = functions.database.ref('/discounts/{uid}/').onWrite(event =>{
 
 	let productCreated = false;
 	let productChanged = false;
