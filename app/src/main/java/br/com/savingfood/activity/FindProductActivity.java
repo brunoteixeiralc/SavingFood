@@ -96,14 +96,14 @@ public class FindProductActivity extends AppCompatActivity {
 
                         Product product = st.getValue(Product.class);
 
-                        DataSnapshot storesSnap = st.child("stores");
-                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
-                            if(product.getmStores() == null)
-                                product.setmStores(new ArrayList<String>());
-                            product.getmStores().add(sSnap.getKey());
-                        }
-
-                        product.setUid(st.getKey());
+//                        DataSnapshot storesSnap = st.child("stores");
+//                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
+//                            if(product.getmStores() == null)
+//                                product.setmStores(new ArrayList<String>());
+//                            product.getmStores().add(sSnap.getKey());
+//                        }
+//
+//                        product.setUid(st.getKey());
                         products.add(product);
                     }
                 }

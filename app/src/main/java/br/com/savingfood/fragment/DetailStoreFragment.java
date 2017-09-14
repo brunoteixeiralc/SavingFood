@@ -156,10 +156,10 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
             }
         });
 
-        if(products == null){
+        if(products == null || products.size() == 0){
             btnSeeAll.setVisibility(View.GONE);
             products = new ArrayList<>();
-            getProducts();
+            getProducts(store.getNetwork(),store.getName());
 
         }else{
             btnSeeAll.setVisibility(View.VISIBLE);
@@ -230,9 +230,9 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
         return false;
     }
 
-    private void getProducts(){
+    private void getProducts(String network,String store){
 
-        mDatabase.child("discounts").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild("search").equalTo(network+"_"+store).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -243,17 +243,6 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                     for (DataSnapshot st : dataSnapshot.getChildren()) {
 
                         Product product = st.getValue(Product.class);
-
-                        DataSnapshot storesSnap = st.child("stores");
-                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
-                            if(sSnap.getKey().equalsIgnoreCase(store.getKeyStore())){
-                                product.setUid(st.getKey());
-                                products.add(product);
-                                break;
-                            }
-                        }
-
-                        //Apresentação Shibata
                         product.setUid(st.getKey());
                         products.add(product);
                     }
@@ -314,16 +303,11 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
                     for (DataSnapshot st : dataSnapshot.getChildren()) {
 
-                        DataSnapshot storesSnap = st.child("stores");
-                        for (DataSnapshot sSnap : storesSnap.getChildren()) {
-                            if(sSnap.getKey().equalsIgnoreCase(store.getKeyStore())){
-                                Product product = st.getValue(Product.class);
-                                product.setFieldToFilter(node);
-                                product.setUid(st.getKey());
-                                products.add(product);
-                                break;
-                            }
-                        }
+                          Product product = st.getValue(Product.class);
+                          if(product.getSearch().equalsIgnoreCase(store.getNetwork()+"_"+store.getName())){
+                              product.setFieldToFilter(node);
+                              products.add(product);
+                          }
                     }
                 }
 

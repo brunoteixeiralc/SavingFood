@@ -117,7 +117,6 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                 fragment = new StoreListFragment();
                 bundle = new Bundle();
                 bundle.putSerializable("stores", (Serializable) storeList);
-                bundle.putSerializable("products", (Serializable) products);
                 fragment.setArguments(bundle);
 
                 if(fragment != null) {
@@ -227,7 +226,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
     @Override
     public void onLocationChanged(Location location) {
 
-        //Apresentação Shinata
+        //TODO melhorar
         //(locationNow.getLatitude() != location.getLatitude() && locationNow.getLongitude() != location.getLongitude())
         if(locationNow == null){
             locationNow = location;
@@ -293,7 +292,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("store",clusterMarkerLocation.getStore());
-                bundle.putSerializable("products", (Serializable) products);
+                bundle.putSerializable("products", (Serializable) clusterMarkerLocation.getStore().getProducts());
 
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);
@@ -336,13 +335,15 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
                 storeList.clear();
 
-                if(dataSnapshot.hasChildren()){
+//                if(dataSnapshot.hasChildren()){
 
                     if(dataSnapshot.hasChildren()){
+
                         for (DataSnapshot nt: dataSnapshot.getChildren()) {
                             for (DataSnapshot st: nt.getChildren()) {
 
                                     Store store = st.getValue(Store.class);
+                                    store.setProducts(new ArrayList<Product>());
 
                                     Location storeLocation=new Location("storeLocation");
                                     storeLocation.setLatitude(store.getLat());
@@ -357,10 +358,14 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
 
                                     if(!findAllProduct && products.size() > 0){
                                        for (Product p : products){
-                                           if(p.getmStores().contains(store.getKeyStore())){
-                                              storeList.add(store);
-                                              clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
-                                            }
+                                           if(p.getSearch().contains(store.getNetwork()+"_"+store.getName())){
+                                              if(!storeList.contains(store)){
+                                                  storeList.add(store);
+                                                  clManager.addItem(new ClusterMarkerLocation(new LatLng(store.getLat(), store.getLng()),store.getName(),store.getAddress(),store));
+
+                                              }
+                                            store.getProducts().add(p);
+                                           }
                                         }
                                     }else{
                                         storeList.add(store);
@@ -373,7 +378,7 @@ public class MapFragment extends Fragment implements com.google.android.gms.maps
                         Utils.closeDialog(MapFragment.this.getContext());
                     }
                 }
-            }
+ //           }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {

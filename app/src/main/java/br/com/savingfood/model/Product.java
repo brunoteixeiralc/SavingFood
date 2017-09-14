@@ -2,10 +2,7 @@ package br.com.savingfood.model;
 
 import android.support.annotation.NonNull;
 
-import com.google.firebase.database.Exclude;
-
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * Created by brunolemgruber on 18/07/16.
@@ -17,9 +14,7 @@ public class Product implements Serializable,Comparable<Product> {
 
     private String uid;
 
-    private Long bar_code;
-
-    private String category;
+    private String bar_code;
 
     private String description;
 
@@ -29,19 +24,9 @@ public class Product implements Serializable,Comparable<Product> {
 
     private Double old_price;
 
-    private String short_unit_measurement;
-
-    private String unit_measurement;
-
-    private String unit_quantity;
-
-    private Double wholesale_price;
-
     private int views;
 
     private int quantity;
-
-    private boolean inCart;
 
     private int percent;
 
@@ -49,23 +34,7 @@ public class Product implements Serializable,Comparable<Product> {
 
     private String fieldToFilter;
 
-    private List<String> mStores;
-
-    public Long getBar_code() {
-        return bar_code;
-    }
-
-    public void setBar_code(Long bar_code) {
-        this.bar_code = bar_code;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
+    private String search;
 
     public String getDescription() {
         return description;
@@ -83,30 +52,6 @@ public class Product implements Serializable,Comparable<Product> {
         this.img = img;
     }
 
-    public String getShort_unit_measurement() {
-        return short_unit_measurement;
-    }
-
-    public void setShort_unit_measurement(String short_unit_measurement) {
-        this.short_unit_measurement = short_unit_measurement;
-    }
-
-    public String getUnit_measurement() {
-        return unit_measurement;
-    }
-
-    public void setUnit_measurement(String unit_measurement) {
-        this.unit_measurement = unit_measurement;
-    }
-
-    public String getUnit_quantity() {
-        return unit_quantity;
-    }
-
-    public void setUnit_quantity(String unit_quantity) {
-        this.unit_quantity = unit_quantity;
-    }
-
     public String getName() {
         return name;
     }
@@ -115,28 +60,12 @@ public class Product implements Serializable,Comparable<Product> {
         this.name = name;
     }
 
-    public boolean isInCart() {
-        return inCart;
-    }
-
-    public void setInCart(boolean inCart) {
-        this.inCart = inCart;
-    }
-
     public Double getPrice() {
         return price;
     }
 
     public void setPrice(Double price) {
         this.price = price;
-    }
-
-    public Double getWholesale_price() {
-        return wholesale_price;
-    }
-
-    public void setWholesale_price(Double wholesale_price) {
-        this.wholesale_price = wholesale_price;
     }
 
     public int getQuantity() {
@@ -187,19 +116,6 @@ public class Product implements Serializable,Comparable<Product> {
         this.due_date = due_date;
     }
 
-    @Override
-    public int compareTo(@NonNull Product product) {
-
-       if(product.getFieldToFilter().equalsIgnoreCase("views")){
-           return this.views - product.getViews();
-       }else if(product.getFieldToFilter().equalsIgnoreCase("quantity")){
-           return this.quantity - product.getQuantity();
-       }else if(product.getFieldToFilter().equalsIgnoreCase("price")){
-           return Double.compare(this.price,product.getPrice());
-       }
-        return 0;
-    }
-
     public String getFieldToFilter() {
         return fieldToFilter;
     }
@@ -208,11 +124,32 @@ public class Product implements Serializable,Comparable<Product> {
         this.fieldToFilter = fieldToFilter;
     }
 
-    public List<String> getmStores() {
-        return mStores;
+    public String getBar_code() {
+        return bar_code;
     }
 
-    public void setmStores(List<String> mStores) {
-        this.mStores = mStores;
+    public void setBar_code(String bar_code) {
+        this.bar_code = bar_code;
+    }
+
+    @Override
+    public int compareTo(@NonNull Product product) {
+
+        if(product.getFieldToFilter().equalsIgnoreCase("views")){
+            return this.views - product.getViews();
+        }else if(product.getFieldToFilter().equalsIgnoreCase("quantity")){
+            return this.quantity - product.getQuantity();
+        }else if(product.getFieldToFilter().equalsIgnoreCase("price")){
+            return Double.compare(this.price,product.getPrice());
+        }
+        return 0;
+    }
+
+    public String getSearch() {
+        return search;
+    }
+
+    public void setSearch(String search) {
+        this.search = search;
     }
 }

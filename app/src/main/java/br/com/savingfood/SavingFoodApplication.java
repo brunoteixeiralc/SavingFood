@@ -3,8 +3,7 @@ package br.com.savingfood;
 import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
-import com.onesignal.OSNotificationOpenResult;
-import com.onesignal.OneSignal;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -17,15 +16,15 @@ public class SavingFoodApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        OneSignal.startInit(this)
-                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-                .setNotificationOpenedHandler(new OneSignal.NotificationOpenedHandler() {
-                    @Override
-                    public void notificationOpened(OSNotificationOpenResult result) {
-
-                    }
-                })
-                .init();
+//        OneSignal.startInit(this)
+//                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
+//                .setNotificationOpenedHandler(new OneSignal.NotificationOpenedHandler() {
+//                    @Override
+//                    public void notificationOpened(OSNotificationOpenResult result) {
+//
+//                    }
+//                })
+//                .init();
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/Nexa-Regular.ttf")

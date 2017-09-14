@@ -103,7 +103,6 @@ public class StoreListFragment extends Fragment {
 
         if(getArguments() != null){
             storeList = (List<Store>) getArguments().getSerializable("stores");
-            products = (List<Product>) getArguments().getSerializable("products");
         }
 
         mLayoutManager = new LinearLayoutManager(StoreListFragment.this.getActivity());
@@ -133,7 +132,7 @@ public class StoreListFragment extends Fragment {
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("store",storeSelected);
-                bundle.putSerializable("products", (Serializable) products);
+                bundle.putSerializable("products", (Serializable) storeSelected.getProducts());
 
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);

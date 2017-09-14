@@ -1,6 +1,7 @@
 package br.com.savingfood.model;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by brunolemgruber on 15/07/16.
@@ -22,8 +23,6 @@ public class Store implements Serializable {
 
     private String name;
 
-    private String pdf;
-
     private String phone;
 
     private Float distance;
@@ -31,6 +30,8 @@ public class Store implements Serializable {
     private String network;
 
     private String keyStore;
+
+    private List<Product> products;
 
     public String getAddress() {
         return address;
@@ -88,14 +89,6 @@ public class Store implements Serializable {
         this.name = name;
     }
 
-    public String getPdf() {
-        return pdf;
-    }
-
-    public void setPdf(String pdf) {
-        this.pdf = pdf;
-    }
-
     public String getPhone() {
         return phone;
     }
@@ -126,5 +119,13 @@ public class Store implements Serializable {
 
     public void setKeyStore(String keyStore) {
         this.keyStore = keyStore;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 }
