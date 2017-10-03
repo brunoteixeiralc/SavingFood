@@ -47,7 +47,7 @@ public class ReviewFragment extends ListFragment implements ModelCallbacks {
 
         TextView titleView = (TextView) rootView.findViewById(android.R.id.title);
         titleView.setText(R.string.titulo_acabou_wizard);
-        titleView.setTextColor(getResources().getColor(R.color.step_pager_selected_tab_color));
+        titleView.setTextColor(getResources().getColor(R.color.colorPrimary));
 
         ListView listView = (ListView) rootView.findViewById(android.R.id.list);
         setListAdapter(mReviewAdapter);

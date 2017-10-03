@@ -17,7 +17,7 @@
     <string name="see_others_products">Ver os outros produtos</string>
 
     <!-- Mensagens Wizard -->
-    <string name="texto_explicativo">Queremos te conhecer um pouco melhor. Podemos fazer algumas perguntas?</string>
+    <string name="texto_explicativo">Queremos te conhecer um pouco melhor. Iremos fazer duas perguntas.</string>
     <string name="texto_agradecimento_wizard">Obrigado pelas respostas. Estamos prontos para começar.</string>
     <string name="txt_botao_proximo">Próximo</string>
     <string name="txt_botao_anterior">Voltar</string>

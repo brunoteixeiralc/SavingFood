@@ -22,7 +22,7 @@ public class WizardQuestion extends AbstractWizardModel {
                 new InstructionPage(this, "Info"),
 
                 new SingleFixedChoicePage(this, "Qual tipo de estabelecimento possui?")
-                        .setChoices("Restaurante", "Lanchonete", "Pizzaria")
+                        .setChoices("Bar", "Cantina", "Food Truck")
                         .setRequired(true),
 
                 new SingleFixedChoicePage(this, "Quantas vezes faz compras por mês?")
