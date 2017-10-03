@@ -68,6 +68,9 @@
         <activity android:name=".activity.FindProductActivity" android:screenOrientation="portrait"
             android:configChanges="keyboardHidden"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
+        <activity android:name=".activity.WizardActivity" android:screenOrientation="portrait"
+            android:configChanges="keyboardHidden"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden"/>
     </application>
 
 </manifest>

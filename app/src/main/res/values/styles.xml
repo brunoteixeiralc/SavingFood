@@ -43,4 +43,47 @@
         <item name="colorControlActivated">@color/colorAccent</item>
     </style>
 
+    <style name="WizardPageContainer">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="WizardPageTitle">
+        <item name="android:id">@android:id/title</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">8dp</item>
+        <item name="android:layout_marginLeft">16dp</item>
+        <item name="android:layout_marginRight">16dp</item>
+        <item name="android:paddingLeft">?android:attr/listPreferredItemPaddingLeft</item>
+        <item name="android:textSize">30sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:fontFamily">sans-serif-thin</item>
+    </style>
+
+    <style name="InstructionPageContainer">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">fill_parent</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="InstructionTextContainer">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="InstructionPageText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:text">@string/texto_explicativo</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_gravity">top</item>
+    </style>
+
 </resources>

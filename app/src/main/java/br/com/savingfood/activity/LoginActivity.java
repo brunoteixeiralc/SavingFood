@@ -40,7 +40,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void loadMainActivity(){
 
-        Intent intent = new Intent(LoginActivity.this,FindProductActivity.class);
+        Intent intent = new Intent(LoginActivity.this,WizardActivity.class);
         startActivity(intent);
     }
 }

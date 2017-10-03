@@ -5,4 +5,11 @@
     <color name="colorAccent">#ffffff</color>
     <color name="red">@android:color/holo_red_light</color>
     <color name="colorfacebook">#3B5998</color>
+
+    <color name="step_pager_previous_tab_color">#31493C</color>
+    <color name="step_pager_selected_tab_color">#31493C</color>
+    <color name="step_pager_next_tab_color">#10000000</color>
+
+    <color name="text_light">#66000000</color>
+    <color name="instruction_text">#9E9E9E</color>
 </resources>

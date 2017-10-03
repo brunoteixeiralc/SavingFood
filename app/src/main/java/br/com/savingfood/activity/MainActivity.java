@@ -91,11 +91,11 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        bundle = new Bundle();
-        bundle.putBoolean("loadAllProducts", getIntent().getBooleanExtra("loadAllProducts",false));
-        if(!getIntent().getBooleanExtra("loadAllProducts",false)){
-            bundle.putSerializable("products",getIntent().getBundleExtra("bundle_products").getSerializable("products"));
-        }
+//        bundle = new Bundle();
+//        bundle.putBoolean("loadAllProducts", getIntent().getBooleanExtra("loadAllProducts",false));
+//        if(!getIntent().getBooleanExtra("loadAllProducts",false)){
+//            bundle.putSerializable("products",getIntent().getBundleExtra("bundle_products").getSerializable("products"));
+//        }
 
         fragment = new MapFragment();
         fragment.setArguments(bundle);
