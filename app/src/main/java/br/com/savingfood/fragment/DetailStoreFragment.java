@@ -45,7 +45,9 @@ import java.util.Collections;
 import java.util.List;
 
 import br.com.savingfood.R;
+import br.com.savingfood.adapter.ProdCategAdapter;
 import br.com.savingfood.adapter.ProductAdapter;
+import br.com.savingfood.model.Category;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.DividerItemDecoration;
@@ -68,7 +70,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
     public ImageView img, mIconFilter,mIconRoute;
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
-    private List<Product> products;
+    private List<Object> products;
     private BottomSheetDialog dialog;
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
@@ -81,7 +83,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando produtos");
+        Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando ofertas.");
     }
 
     @Nullable
@@ -100,7 +102,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
         if(getArguments() != null){
             store = (Store) getArguments().getSerializable("store");
-            products = (List<Product>) getArguments().getSerializable("products");
+            //products = (List<Product>) getArguments().getSerializable("products");
         }
 
         if(recyclerView == null){
@@ -165,7 +167,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
             btnSeeAll.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+            //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
             recyclerView.setAdapter(mAdapter);
             Utils.closeDialog(DetailStoreFragment.this.getContext());
         }
@@ -251,7 +253,17 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                 if(products.size() != 0){
                     linearLayout.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-                    mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+                    //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+                    Category category = new Category();
+                    category.setName("categoria 1");
+                    Category category2 = new Category();
+                    category2.setName("categoria 2");
+                    Category category3 = new Category();
+                    category3.setName("categoria 3");
+                    products.add(category);
+                    products.add(category2);
+                    products.add(category3);
+                    mAdapter = new ProdCategAdapter(products,DetailStoreFragment.this.getContext());
                     recyclerView.setAdapter(mAdapter);
 
                 }else{
@@ -271,23 +283,23 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
 
     }
 
-    private ProductAdapter.ProductOnClickListener onClickListener() {
-        return new ProductAdapter.ProductOnClickListener() {
-            @Override
-            public void onClick(View view, int idx) {
-
-                Product product = products.get(idx);
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("product",product);
-                bundle.putSerializable("store",store);
-
-                fragment = new ProductDetailFragment();
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
-            }
-        };
-    }
+//    private ProductAdapter.ProductOnClickListener onClickListener() {
+//        return new ProductAdapter.ProductOnClickListener() {
+//            @Override
+//            public void onClick(View view, int idx) {
+//
+//                Product product = products.get(idx);
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("product",product);
+//                bundle.putSerializable("store",store);
+//
+//                fragment = new ProductDetailFragment();
+//                fragment.setArguments(bundle);
+//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+//                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+//            }
+//        };
+//    }
 
     private void filterProducts(final String type, final String node){
 
@@ -318,7 +330,7 @@ public class DetailStoreFragment extends Fragment implements SearchView.OnQueryT
                     }
 
                     recyclerView.setVisibility(View.VISIBLE);
-                    mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
+                    //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
                     recyclerView.setAdapter(mAdapter);
 
                 }

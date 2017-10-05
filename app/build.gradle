@@ -85,7 +85,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile 'uk.co.chrisjenx:calligraphy:2.2.0'
-    compile 'com.github.apl-devs:appintro:v4.2.2'
     compile 'com.roughike:bottom-bar:1.4.0'
     compile('com.github.hotchemi:permissionsdispatcher:2.4.0') {
         exclude module: "support-v13"
