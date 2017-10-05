@@ -119,7 +119,6 @@ public final class Utils {
 
         switch (enumIconBar){
             case STORELIST:{
-                mIconMap.setVisibility(View.VISIBLE);
                 break;
             }
             case STOREMAP: {

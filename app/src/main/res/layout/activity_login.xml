@@ -60,14 +60,6 @@
             android:text="Entrar"
             android:textColor="@color/white" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:padding="10dp"
-            android:text="Sem conta? Crie uma agora."
-            android:textColor="@color/white" />
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

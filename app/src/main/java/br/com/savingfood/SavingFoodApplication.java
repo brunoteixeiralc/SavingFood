@@ -16,16 +16,6 @@ public class SavingFoodApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-//        OneSignal.startInit(this)
-//                .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
-//                .setNotificationOpenedHandler(new OneSignal.NotificationOpenedHandler() {
-//                    @Override
-//                    public void notificationOpened(OSNotificationOpenResult result) {
-//
-//                    }
-//                })
-//                .init();
-
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/Nexa-Regular.ttf")
                 .setFontAttrId(R.attr.fontPath)

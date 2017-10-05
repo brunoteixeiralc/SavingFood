@@ -9,7 +9,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,24 +50,23 @@ public class StoreListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.list, container, false);
-
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (i == KeyEvent.KEYCODE_BACK) {
-                        getFragmentManager().popBackStack();
-                        Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
-
-                        appBarLayout.setExpanded(false,true);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+//
+//                        appBarLayout.setExpanded(false,true);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
 
@@ -84,22 +82,22 @@ public class StoreListFragment extends Fragment {
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(true,true);
 
-        mIconMapImageView = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
-        mIconMapImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                getFragmentManager().popBackStack();
-                Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
-
-                appBarLayout.setExpanded(false,true);
-
-                Bundle params = new Bundle();
-                params.putString("icon_click", "ic_map");
-                mFirebaseAnalytics.logEvent("type_view_store", params);
-
-            }
-        });
+//        mIconMapImageView = (ImageView) toolbar.findViewById(R.id.ic_mapStore);
+//        mIconMapImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                getFragmentManager().popBackStack();
+//                Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
+//
+//                appBarLayout.setExpanded(false,true);
+//
+//                Bundle params = new Bundle();
+//                params.putString("icon_click", "ic_map");
+//                mFirebaseAnalytics.logEvent("type_view_store", params);
+//
+//            }
+//        });
 
         if(getArguments() != null){
             storeList = (List<Store>) getArguments().getSerializable("stores");
@@ -141,5 +139,4 @@ public class StoreListFragment extends Fragment {
             }
         };
     }
-
 }

@@ -13,9 +13,7 @@ import android.view.View;
 
 import br.com.savingfood.R;
 
-/**
- * Created by Ronan Lima on 16/02/2016.
- */
+
 public class StepPagerStrip extends View {
     private static final int[] ATTRS = new int[]{
             android.R.attr.gravity
