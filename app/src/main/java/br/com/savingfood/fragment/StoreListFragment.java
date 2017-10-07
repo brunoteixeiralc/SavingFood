@@ -1,5 +1,6 @@
 package br.com.savingfood.fragment;
 
+import android.app.PendingIntent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
@@ -9,11 +10,14 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.android.gms.location.Geofence;
+import com.google.android.gms.location.GeofencingRequest;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.Serializable;
@@ -44,6 +48,8 @@ public class StoreListFragment extends Fragment {
     private FirebaseAnalytics mFirebaseAnalytics;
     private AppBarLayout appBarLayout;
     private List<Product> products;
+
+    private PendingIntent geoFencePendingIntent;
 
     @Nullable
     @Override
@@ -115,6 +121,54 @@ public class StoreListFragment extends Fragment {
         return  view;
     }
 
+    private GeofencingRequest createGeofenceRequest(Geofence geofence ) {
+        Log.d("savingfoods", "createGeofenceRequest");
+        return new GeofencingRequest.Builder()
+                .setInitialTrigger( GeofencingRequest.INITIAL_TRIGGER_ENTER )
+                .addGeofence( geofence )
+                .build();
+    }
+
+    private Geofence createGeofence(Double lat, Double lng, float radius ) {
+        Log.d("savingfoods", "createGeofence");
+        return new Geofence.Builder()
+                .setRequestId("SavingFoods_geofence")
+                .setCircularRegion( lat, lng, radius)
+                .setExpirationDuration( 60 * 60 * 1000 )
+                .setTransitionTypes( Geofence.GEOFENCE_TRANSITION_ENTER
+                        | Geofence.GEOFENCE_TRANSITION_EXIT )
+                .build();
+    }
+
+//    private PendingIntent createGeofencePendingIntent() {
+//        Log.d("savingfoods", "createGeofencePendingIntent");
+//        if ( geoFencePendingIntent != null )
+//            return geoFencePendingIntent;
+//
+//        Intent intent = new Intent( this, GeofenceTrasitionService.class);
+//        return PendingIntent.getService(
+//                StoreListFragment.this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
+//    }
+//
+//    private void addGeofence(GeofencingRequest request) {
+//        Log.d("savingfoods", "addGeofence");
+//
+//        if (checkPermission())
+//            LocationServices.GeofencingApi.addGeofences(
+//                    googleApiClient,
+//                    request,
+//                    createGeofencePendingIntent()
+//            ).setResultCallback(this);
+//    }
+//
+//    // Start Geofence creation process
+//    private void startGeofence(Double lat, Double lng) {
+//        Log.i("savingfoods", "startGeofence()");
+//            Geofence geofence = createGeofence( lat,lng, 100.0f );
+//            GeofencingRequest geofenceRequest = createGeofenceRequest( geofence );
+//            addGeofence( geofenceRequest );
+//    }
+
     private StoreAdapter.StoreOnClickListener onClickListener() {
         return new StoreAdapter.StoreOnClickListener() {
             @Override
@@ -136,6 +190,8 @@ public class StoreListFragment extends Fragment {
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
                 transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+
+               // startGeofence(storeSelected.getLat(),storeSelected.getLng());
             }
         };
     }

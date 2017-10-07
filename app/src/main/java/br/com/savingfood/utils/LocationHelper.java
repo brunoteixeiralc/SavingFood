@@ -151,7 +151,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback{
      * Method used to build GoogleApiClient
      */
 
-    public void buildGoogleApiClient() {
+    public GoogleApiClient buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(context)
                 .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) current_activity)
                 .addOnConnectionFailedListener((GoogleApiClient.OnConnectionFailedListener) current_activity)
@@ -197,7 +197,7 @@ public class LocationHelper implements PermissionUtils.PermissionResultCallback{
             }
         });
 
-
+        return mGoogleApiClient;
     }
 
     /**
