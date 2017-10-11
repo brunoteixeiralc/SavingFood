@@ -43,6 +43,7 @@ import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.model.User;
 import br.com.savingfood.utils.Config;
+import br.com.savingfood.utils.GoogleApiSingleton;
 import br.com.savingfood.utils.LocationHelper;
 import br.com.savingfood.utils.PermissionUtils;
 import br.com.savingfood.utils.Utils;
@@ -152,16 +153,14 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     private void goStoresFragment(){
 
-        bundle = new Bundle();
-//      bundle.putDouble("lat", mLastLocation.getLatitude());
-//      bundle.putDouble("lng", mLastLocation.getLongitude());
-        bundle.putSerializable("stores", (Serializable) storeList);
-        fragment.setArguments(bundle);
+            bundle = new Bundle();
+            bundle.putSerializable("stores", (Serializable) storeList);
+            fragment.setArguments(bundle);
 
-        getAddress(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+            getAddress(mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
-        if(fragment != null)
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+            if(fragment != null)
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
     public void getAddress(Double latitude,Double longitude)
@@ -172,7 +171,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
         if(locationAddress!=null)
         {
-
             String address = locationAddress.getAddressLine(0);
             String address1 = locationAddress.getAddressLine(1);
             String city = locationAddress.getLocality();
@@ -253,7 +251,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                             store.setKeyStore(st.getKey());
 
                             storeList.add(store);
-                        }
+                        }             
                     }
                     goStoresFragment();
                     Utils.closeDialog(MainActivity.this);
@@ -265,6 +263,12 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                 Utils.closeDialog(MainActivity.this);
             }
         });
+    }
+
+    public static Intent makeNotificationIntent(Context geofenceService, String msg)
+    {
+        Log.d(TAG,msg);
+        return new Intent(geofenceService,MainActivity.class);
     }
 
     @Override
@@ -316,6 +320,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         if (mLastLocation != null) {
             getStores(mLastLocation);
             Utils.openDialog(this,"Procurando lojas.");
+            GoogleApiSingleton.getInstance(locationHelper.getGoogleApiCLient());
+
         }
     }
 
@@ -358,4 +364,5 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
     public void NeverAskAgain(int request_code) {
         Log.i("PERMISSION","NEVER ASK AGAIN");
     }
+
 }

@@ -30,6 +30,8 @@
 
         <uses-library android:name="com.google.android.maps" />
 
+        <service android:name=".utils.GeofenceTrasitionService"/>
+
         <service
             android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
