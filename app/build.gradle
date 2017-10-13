@@ -107,6 +107,7 @@ dependencies {
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.android.support:multidex:1.0.1'
     compile 'com.airbnb.android:lottie:2.1.0'
+    compile 'com.facebook.android:facebook-login:[4,5)'
 }
 
 apply plugin: 'com.google.gms.google-services'

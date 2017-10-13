@@ -1,4 +1,4 @@
-package br.com.savingfood.utils;
+package br.com.savingfood.singleton;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 

@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.facebook.FacebookSdk;
+
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 
 /**
@@ -15,6 +17,10 @@ public class SavingFoodApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        FacebookSdk.setApplicationId(getApplicationContext().getResources().getString(R.string.facebook_app_id));
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
                 .setDefaultFontPath("fonts/Nexa-Regular.ttf")

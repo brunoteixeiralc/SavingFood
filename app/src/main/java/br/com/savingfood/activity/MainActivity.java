@@ -43,7 +43,7 @@ import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
 import br.com.savingfood.model.User;
 import br.com.savingfood.utils.Config;
-import br.com.savingfood.utils.GoogleApiSingleton;
+import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.LocationHelper;
 import br.com.savingfood.utils.PermissionUtils;
 import br.com.savingfood.utils.Utils;
@@ -113,8 +113,8 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                         SharedPreferences pref = getApplicationContext().getSharedPreferences(Config.SHARED_PREF, 0);
                         String regId = pref.getString("regId", null);
 
-                        User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(),"",regId);
-                        FirebaseServices.saveUser(user);
+                        //User user = new User(FirebaseAuth.getInstance().getCurrentUser().getUid(),"",regId);
+                        //FirebaseServices.saveUser(user);
                         if (!task.isSuccessful()) {
                             Log.w(TAG, "signInAnonymously", task.getException());
                             Toast.makeText(MainActivity.this, "Authentication failed.",

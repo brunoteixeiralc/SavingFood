@@ -39,7 +39,7 @@ import br.com.savingfood.model.Store;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.GeofenceTrasitionService;
-import br.com.savingfood.utils.GoogleApiSingleton;
+import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.Utils;
 
 /**
