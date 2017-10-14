@@ -1,26 +1,31 @@
 package br.com.savingfood.model;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
 
 /**
  * Created by brunolemgruber on 26/05/17.
  */
 
-public class User implements Serializable {
+public class User extends RealmObject {
 
     private String uid;
-    private String device_id;
     private String tokenPush;
     private String email;
     private String name;
 
     public User(){}
 
-    public User (String uid,String device_id,String tokenPush, String email, String name){
+    public User (String uid,String tokenPush, String email, String name){
 
         this.uid = uid;
-        this.device_id = device_id;
         this.tokenPush = tokenPush;
+        this.email = email;
+        this.name = name;
+    }
+
+    public User (String uid, String email, String name){
+
+        this.uid = uid;
         this.email = email;
         this.name = name;
     }
@@ -31,14 +36,6 @@ public class User implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
-    }
-
-    public String getDevice_id() {
-        return device_id;
-    }
-
-    public void setDevice_id(String device_id) {
-        this.device_id = device_id;
     }
 
     public String getTokenPush() {

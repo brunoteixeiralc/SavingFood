@@ -16,9 +16,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.List;
 
 import br.com.savingfood.R;
+import br.com.savingfood.model.Questions;
+import br.com.savingfood.model.User;
+import br.com.savingfood.utils.Config;
 import br.com.savingfood.wizard.WizardQuestion;
 import br.com.savingfood.wizard.model.AbstractWizardModel;
 import br.com.savingfood.wizard.model.ModelCallbacks;
@@ -26,6 +32,7 @@ import br.com.savingfood.wizard.model.Page;
 import br.com.savingfood.wizard.ui.PageFragmentCallbacks;
 import br.com.savingfood.wizard.ui.ReviewFragment;
 import br.com.savingfood.wizard.ui.StepPagerStrip;
+import io.realm.Realm;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class WizardActivity extends AppCompatActivity implements PageFragmentCallbacks
@@ -41,13 +48,18 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
     private Button prevButton, nextButton;
     private boolean consumePageSelectedEvent, editingAfterReview;
     private SharedPreferences myPrefs;
+    private Questions questions;
+    private Boolean wizardDisplayed;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        questions = new Questions();
+
         myPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        Boolean wizardDisplayed = myPrefs.getBoolean(welComeWizard, false);
+        wizardDisplayed = myPrefs.getBoolean(welComeWizard, false);
 
         gerenciaChamadaWizard(savedInstanceState);
 
@@ -92,17 +104,19 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
             @Override
             public void onClick(View v) {
                 if (viewPager.getCurrentItem() == listaPaginasWizard.size()) {
+                    saveUser();
                     addWizardInSharedPreferences();
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                     finish();
                 } else {
-                    if (editingAfterReview) {
-                        viewPager.setCurrentItem(pagerAdapter.getCount() - 1);
-                    } else {
-                        viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
+                    if( viewPager.getCurrentItem() == 1){
+                        questions.setFirst((String) listaPaginasWizard.get(viewPager.getCurrentItem()).getData().get("_"));
+                    }else if ( viewPager.getCurrentItem() == 2){
+                        questions.setSecond((String) listaPaginasWizard.get(viewPager.getCurrentItem()).getData().get("_"));
                     }
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                 }
             }
         });
@@ -123,6 +137,27 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
         onPageTreeChanged();
         updateBottomBar();
 
+    }
+
+    private void saveUser() {
+
+        Realm realm = Realm.getDefaultInstance();
+        User user = realm.where(User.class).findFirst();
+
+        SharedPreferences pref = this.getSharedPreferences(Config.SHARED_PREF, 0);
+        String regId = pref.getString("regId", null);
+        if(regId != null){
+            realm.beginTransaction();
+            user.setTokenPush(regId);
+            realm.commitTransaction();
+        }
+
+
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase.child("users").child(user.getUid()).setValue(user);
+
+        mDatabase.child("questions").child(user.getUid()).setValue(questions);
     }
 
     private void addWizardInSharedPreferences(){

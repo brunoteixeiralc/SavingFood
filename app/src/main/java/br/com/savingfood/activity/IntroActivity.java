@@ -27,6 +27,7 @@ import java.util.Arrays;
 import br.com.savingfood.R;
 import br.com.savingfood.model.User;
 import br.com.savingfood.utils.Utils;
+import io.realm.Realm;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 
@@ -87,7 +88,14 @@ public class IntroActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful())
                         {
-                            FirebaseUser usuario = mAuth.getCurrentUser();
+                            FirebaseUser fUser = mAuth.getCurrentUser();
+                            User user = new User(fUser.getUid(),fUser.getEmail(),fUser.getDisplayName());
+
+                            Realm realm = Realm.getDefaultInstance();
+                            realm.beginTransaction();
+                            realm.copyToRealm(user);
+                            realm.commitTransaction();
+
                             Intent intent = new Intent(IntroActivity.this,WizardActivity.class);
                             startActivity(intent);
 
@@ -114,6 +122,11 @@ public class IntroActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
-        Log.d("savingfood" , currentUser.getUid() + " " + currentUser.getDisplayName());
+        if(currentUser != null){
+            Intent intent = new Intent(IntroActivity.this,WizardActivity.class);
+            startActivity(intent);
+            Log.d("savingfood" , currentUser.getUid() + " " + currentUser.getDisplayName());
+        }
+
     }
 }
