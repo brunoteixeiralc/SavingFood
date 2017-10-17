@@ -118,6 +118,9 @@ public final class Utils {
         mIconRoute.setVisibility(View.GONE);
 
         switch (enumIconBar){
+            case PRODUCTLIST:{
+                break;
+            }
             case STORELIST:{
                 break;
             }

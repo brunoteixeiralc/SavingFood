@@ -36,6 +36,10 @@ public class Product implements Serializable,Comparable<Product> {
 
     private String search;
 
+    private String tags;
+
+    private String category;
+
     public String getDescription() {
         return description;
     }
@@ -151,5 +155,21 @@ public class Product implements Serializable,Comparable<Product> {
 
     public void setSearch(String search) {
         this.search = search;
+    }
+
+    public String getTags() {
+        return tags;
+    }
+
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 }

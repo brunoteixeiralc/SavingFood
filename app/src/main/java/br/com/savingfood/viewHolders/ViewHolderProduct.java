@@ -17,7 +17,7 @@ public class ViewHolderProduct extends RecyclerView.ViewHolder {
     private TextView price_from;
     private TextView price_to;
     private TextView views;
-    private TextView quantity;
+    //private TextView quantity;
     private TextView percent;
     private TextView name;
     private ImageView img;
@@ -28,7 +28,7 @@ public class ViewHolderProduct extends RecyclerView.ViewHolder {
         name = (TextView) view.findViewById(R.id.name);
         percent = (TextView) view.findViewById(R.id.percent);
         views = (TextView) view.findViewById(R.id.views);
-        quantity = (TextView) view.findViewById(R.id.quantity);
+        //quantity = (TextView) view.findViewById(R.id.quantity);
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
         img = (ImageView) view.findViewById(R.id.img);
@@ -57,14 +57,6 @@ public class ViewHolderProduct extends RecyclerView.ViewHolder {
 
     public void setViews(TextView views) {
         this.views = views;
-    }
-
-    public TextView getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(TextView quantity) {
-        this.quantity = quantity;
     }
 
     public TextView getPercent() {

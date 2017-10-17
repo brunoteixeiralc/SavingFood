@@ -1,12 +1,12 @@
 package br.com.savingfood.model;
 
-import java.io.Serializable;
+import io.realm.RealmObject;
 
 /**
  * Created by brunolemgruber on 26/05/17.
  */
 
-public class Questions implements Serializable {
+public class Questions extends RealmObject {
 
     private String first;
     private String second;

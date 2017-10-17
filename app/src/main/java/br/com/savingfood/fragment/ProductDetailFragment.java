@@ -4,10 +4,14 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -53,12 +57,15 @@ public class ProductDetailFragment extends Fragment {
     private FirebaseAnalytics mFirebaseAnalytics;
     private Date d_date;
     private Store store;
+    private AppBarLayout appBarLayout;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.content_product_detail, container, false);
+
+        setHasOptionsMenu(true);
 
         view.setFocusableInTouchMode(true);
         view.requestFocus();
@@ -70,6 +77,7 @@ public class ProductDetailFragment extends Fragment {
                         getFragmentManager().popBackStack();
                         Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
                         toolbar.setTitle("");
+                        appBarLayout.setExpanded(true,true);
 
                         Glide.with(ProductDetailFragment.this.getContext()).load(store.getImg()).into(img);
                         return true;
@@ -78,6 +86,9 @@ public class ProductDetailFragment extends Fragment {
                 return false;
             }
         });
+
+        appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
+        appBarLayout.setExpanded(true, true);
 
         price_from = (TextView) view.findViewById(R.id.price_from);
         price_to = (TextView) view.findViewById(R.id.price_to);
@@ -154,7 +165,6 @@ public class ProductDetailFragment extends Fragment {
                 }else{
                     Utils.openSnack(view,"Tivemos um problema.Tente novamente mais tarde.");
                 }
-
             }
         });
 
@@ -185,6 +195,14 @@ public class ProductDetailFragment extends Fragment {
 
     private long remainDays(Date d1 , Date d2){
         return (int)((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        MenuItem menuSearch = menu.findItem(R.id.action_search);
+        menuSearch.setVisible(false);
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
 

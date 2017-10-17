@@ -25,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 
 import br.com.savingfood.R;
+import br.com.savingfood.model.Questions;
 import br.com.savingfood.model.User;
 import br.com.savingfood.utils.Utils;
 import io.realm.Realm;
@@ -41,6 +42,7 @@ public class IntroActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private CallbackManager callbackManager;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +80,16 @@ public class IntroActivity extends AppCompatActivity {
                         Arrays.asList("public_profile", "email"));
             }
         });
+    }
+
+    private boolean verifyWizard() {
+
+        Realm realm = Realm.getDefaultInstance();
+        Questions questions = realm.where(Questions.class).findFirst();
+        if(questions != null)
+            return true;
+        else
+            return false;
     }
 
     private void signInCredential(AuthCredential credential)
@@ -123,9 +135,14 @@ public class IntroActivity extends AppCompatActivity {
         super.onStart();
         currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(IntroActivity.this,WizardActivity.class);
+            if(verifyWizard()){
+                intent = new Intent(IntroActivity.this,MainActivity.class);
+            }else{
+                intent = new Intent(IntroActivity.this,WizardActivity.class);
+            }
             startActivity(intent);
             Log.d("savingfood" , currentUser.getUid() + " " + currentUser.getDisplayName());
+
         }
 
     }

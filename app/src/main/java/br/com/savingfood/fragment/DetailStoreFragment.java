@@ -22,7 +22,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -41,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,12 +72,13 @@ public class DetailStoreFragment extends Fragment{
     private DatabaseReference mDatabase;
     private Toolbar toolbar;
     private List<Object> products;
+    private List<Product> productsByCategory;
     private BottomSheetDialog dialog;
     private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
     private LottieAnimationView animationView;
     private LinearLayout linearLayout;
-    private Button btnSeeAll;
+    //private Button btnSeeAll;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
@@ -131,13 +132,13 @@ public class DetailStoreFragment extends Fragment{
         linearLayout = (LinearLayout) view.findViewById(R.id.ll_store_detail);
         animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
 
-        btnSeeAll = (Button) view.findViewById(R.id.btn_see_all);
-        btnSeeAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+//        btnSeeAll = (Button) view.findViewById(R.id.btn_see_all);
+//        btnSeeAll.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {
@@ -161,13 +162,17 @@ public class DetailStoreFragment extends Fragment{
             }
         });
 
+        if(productsByCategory == null ){
+            productsByCategory = new ArrayList<>();
+        }
+
         if(products == null || products.size() == 0){
-            btnSeeAll.setVisibility(View.GONE);
+            //btnSeeAll.setVisibility(View.GONE);
             products = new ArrayList<>();
             getProducts(store.getNetwork(),store.getName());
 
         }else{
-            btnSeeAll.setVisibility(View.VISIBLE);
+            //btnSeeAll.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
             //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
@@ -219,6 +224,7 @@ public class DetailStoreFragment extends Fragment{
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu, menu);
         MenuItem searchItem = menu.findItem(R.id.action_search);
+
         SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 
         if (searchItem != null) {
@@ -264,21 +270,37 @@ public class DetailStoreFragment extends Fragment{
                         products.add(product);
                     }
                 }
+                getCategory();
 
-                if(products.size() != 0){
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void getCategory(){
+
+        mDatabase.child("category").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChildren()) {
+                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+                        Category category = new Category();
+                        category.setName(st.getKey());
+                        products.add(category);
+                    }
+                }
+
+                if(products.size() != 0) {
                     linearLayout.setVisibility(View.GONE);
                     recyclerView.setVisibility(View.VISIBLE);
-                    //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
-                    Category category = new Category();
-                    category.setName("categoria 1");
-                    Category category2 = new Category();
-                    category2.setName("categoria 2");
-                    Category category3 = new Category();
-                    category3.setName("categoria 3");
-                    products.add(category);
-                    products.add(category2);
-                    products.add(category3);
-                    mAdapter = new ProdCategAdapter(products,DetailStoreFragment.this.getContext());
+
+                    mAdapter = new ProdCategAdapter(onClickListener(),products,DetailStoreFragment.this.getContext());
                     recyclerView.setAdapter(mAdapter);
 
                 }else{
@@ -298,23 +320,65 @@ public class DetailStoreFragment extends Fragment{
 
     }
 
-//    private ProductAdapter.ProductOnClickListener onClickListener() {
-//        return new ProductAdapter.ProductOnClickListener() {
-//            @Override
-//            public void onClick(View view, int idx) {
-//
-//                Product product = products.get(idx);
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("product",product);
-//                bundle.putSerializable("store",store);
-//
-//                fragment = new ProductDetailFragment();
-//                fragment.setArguments(bundle);
-//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
-//            }
-//        };
-//    }
+    private ProdCategAdapter.onClickListener onClickListener() {
+        return new ProdCategAdapter.onClickListener() {
+            @Override
+            public void onClick(View view, int idx) {
+
+                Object o = products.get(idx);
+                if(o instanceof Product){
+
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("product",(Product)o);
+                    bundle.putSerializable("store",store);
+
+                    fragment = new ProductDetailFragment();
+                    fragment.setArguments(bundle);
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+
+                }else{
+                    Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando produtos.");
+                    getProductsByCategory(((Category)o).getName());
+
+                }
+            }
+        };
+    }
+
+    private void getProductsByCategory(final String category) {
+
+        productsByCategory.clear();
+
+        mDatabase.child("discounts").orderByChild("category").equalTo(category).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+                        Product product = st.getValue(Product.class);
+                        product.setUid(st.getKey());
+                        productsByCategory.add(product);
+                    }
+                }
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("products", (Serializable) productsByCategory);
+                bundle.putSerializable("category", category);
+
+                fragment = new ProductListFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+
+                Utils.closeDialog(DetailStoreFragment.this.getContext());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     private void filterProducts(final String type, final String node){
 

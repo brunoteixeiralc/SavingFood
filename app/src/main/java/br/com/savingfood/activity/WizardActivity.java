@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -58,8 +57,8 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
 
         questions = new Questions();
 
-        myPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        wizardDisplayed = myPrefs.getBoolean(welComeWizard, false);
+//        myPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+//        wizardDisplayed = myPrefs.getBoolean(welComeWizard, false);
 
         gerenciaChamadaWizard(savedInstanceState);
 
@@ -104,8 +103,9 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
             @Override
             public void onClick(View v) {
                 if (viewPager.getCurrentItem() == listaPaginasWizard.size()) {
+                    saveToRealmQuestions();
                     saveUser();
-                    addWizardInSharedPreferences();
+                    //addWizardInSharedPreferences();
                     Intent i = new Intent(getApplicationContext(), MainActivity.class);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
@@ -139,8 +139,15 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
 
     }
 
-    private void saveUser() {
+    private void saveToRealmQuestions() {
+        Realm realm = Realm.getDefaultInstance();
+        realm.beginTransaction();
+        realm.copyToRealm(questions);
+        realm.commitTransaction();
 
+    }
+
+    private void saveUser() {
         Realm realm = Realm.getDefaultInstance();
         User user = realm.where(User.class).findFirst();
 
@@ -151,8 +158,6 @@ public class WizardActivity extends AppCompatActivity implements PageFragmentCal
             user.setTokenPush(regId);
             realm.commitTransaction();
         }
-
-
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
         mDatabase.child("users").child(user.getUid()).setValue(user);

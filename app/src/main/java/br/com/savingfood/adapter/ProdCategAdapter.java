@@ -8,9 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -43,9 +40,16 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private final Context context;
 
-    public ProdCategAdapter(List<Object> items, Context context) {
+    private ProdCategAdapter.onClickListener onClickListener;
+
+    public ProdCategAdapter(ProdCategAdapter.onClickListener onClickListener,List<Object> items, Context context) {
         this.items = items;
         this.context = context;
+        this.onClickListener = onClickListener;
+    }
+
+    public interface onClickListener  {
+        public void onClick(View view, int idx);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         switch (viewType) {
             case PRODUCT:
-                View v1 = inflater.inflate(R.layout.list_item_product, parent, false);
+                View v1 = inflater.inflate(R.layout.list_item_product_discount, parent, false);
                 viewHolder = new ViewHolderProduct(v1);
                 break;
             case CATEGORY:
@@ -70,15 +74,31 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         switch (holder.getItemViewType()) {
             case PRODUCT:
-                ViewHolderProduct vhProduct = (ViewHolderProduct) holder;
+                final ViewHolderProduct vhProduct = (ViewHolderProduct) holder;
                 configureViewHolderProduct(vhProduct, position);
+                if (onClickListener != null) {
+                    vhProduct.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onClickListener.onClick(vhProduct.itemView, position);
+                        }
+                    });
+                }
                 break;
             case CATEGORY:
-                ViewHolderCategory vhCategory = (ViewHolderCategory) holder;
+                final ViewHolderCategory vhCategory = (ViewHolderCategory) holder;
                 configureViewHolderCategory(vhCategory, position);
+                if (onClickListener != null) {
+                    vhCategory.itemView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            onClickListener.onClick(vhCategory.itemView, position);
+                        }
+                    });
+                }
                 break;
             default:
                 break;
@@ -105,7 +125,7 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (product != null) {
             vhProduct.getName().setText(product.getName());
             vhProduct.getPercent().setText(product.getPercent() + "%");
-            vhProduct.getQuantity().setText("Restam " + product.getQuantity() + " itens");
+            //vhProduct.getQuantity().setText("Restam " + product.getQuantity() + " itens");
             vhProduct.getViews().setText(product.getViews() + " visualizações");
             vhProduct.getPrice_from().setPaintFlags(vhProduct.getPrice_from().getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             vhProduct.getPrice_from().setText(Money.reais(new BigDecimal(product.getOld_price(), MathContext.DECIMAL64)).toString());
