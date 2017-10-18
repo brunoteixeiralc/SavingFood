@@ -67,25 +67,25 @@ public class ProductDetailFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (i == KeyEvent.KEYCODE_BACK) {
-                        getFragmentManager().popBackStack();
-                        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
-                        toolbar.setTitle("");
-                        appBarLayout.setExpanded(true,true);
-
-                        Glide.with(ProductDetailFragment.this.getContext()).load(store.getImg()).into(img);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        Utils.setIconBar(EnumToolBar.STOREDETAIL,toolbar);
+//                        toolbar.setTitle("");
+//                        appBarLayout.setExpanded(true,true);
+//
+//                        Glide.with(ProductDetailFragment.this.getContext()).load(store.getImg()).into(img);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
 
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(true, true);
@@ -196,6 +196,7 @@ public class ProductDetailFragment extends Fragment {
     private long remainDays(Date d1 , Date d2){
         return (int)((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

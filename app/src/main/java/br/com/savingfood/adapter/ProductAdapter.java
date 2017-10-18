@@ -89,7 +89,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
 
        }
 
-
         if (productOnClickListener != null) {
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

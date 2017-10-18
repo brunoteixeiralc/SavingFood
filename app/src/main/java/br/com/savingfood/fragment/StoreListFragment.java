@@ -16,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,23 +68,6 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.list, container, false);
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (i == KeyEvent.KEYCODE_BACK) {
-//                        getFragmentManager().popBackStack();
-//                        Utils.setIconBar(EnumToolBar.STOREMAP,toolbar);
-//
-//                        appBarLayout.setExpanded(false,true);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
 
@@ -174,9 +158,9 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
 
     private void startGeofence(Double lat, Double lng) {
         Log.i("savingfoods", "startGeofence()");
-        Geofence geofence = createGeofence( lat,lng, 50.0f );
-        GeofencingRequest geofenceRequest = createGeofenceRequest( geofence );
-        addGeofence( geofenceRequest );
+        Geofence geofence = createGeofence(lat, lng, 50.0f);
+        GeofencingRequest geofenceRequest = createGeofenceRequest(geofence);
+        addGeofence(geofenceRequest);
     }
 
     private StoreAdapter.StoreOnClickListener onClickListener() {
@@ -187,7 +171,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
                 Store storeSelected = storeList.get(idx);
 
                 googleApiClient = GoogleApiSingleton.getInstance(null).get_GoogleApiClient();
-                startGeofence(storeSelected.getLat(),storeSelected.getLng());
+                startGeofence(storeSelected.getLat(), storeSelected.getLng());
 
                 Bundle bAnalytics = new Bundle();
                 bAnalytics.putString(FirebaseAnalytics.Param.ITEM_ID, storeSelected.getKeyStore());
@@ -196,13 +180,13 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
                 mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bAnalytics);
 
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("store",storeSelected);
+                bundle.putSerializable("store", storeSelected);
                 bundle.putSerializable("products", (Serializable) storeSelected.getProducts());
 
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
     }
@@ -210,7 +194,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
     @Override
     public void onResult(@NonNull Status status) {
         Log.i("savingfoods", "onResult: " + status);
-        if ( status.isSuccess() ) {
+        if (status.isSuccess()) {
 
         } else {
             // inform about fail

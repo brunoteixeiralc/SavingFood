@@ -16,6 +16,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -82,14 +83,6 @@ public class DetailStoreFragment extends Fragment{
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        setHasOptionsMenu(true);
-        super.onCreate(savedInstanceState);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando ofertas.");
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -102,7 +95,33 @@ public class DetailStoreFragment extends Fragment{
         try {
             view = inflater.inflate(R.layout.content_store_detail, container, false);
         } catch (InflateException e) {
+
         }
+
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
+//                        toolbar.setTitle("Lojas Próximas");
+//                        appBarLayout.setExpanded(true,true);
+//
+//                        Glide.with(DetailStoreFragment.this.getContext()).load(store.getImg()).into(img);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+
+        setHasOptionsMenu(true);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando ofertas.");
 
         if(getArguments() != null){
             store = (Store) getArguments().getSerializable("store");
@@ -175,9 +194,6 @@ public class DetailStoreFragment extends Fragment{
             //btnSeeAll.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
-            //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
-            recyclerView.setAdapter(mAdapter);
-            Utils.closeDialog(DetailStoreFragment.this.getContext());
         }
 
         name = (TextView) view.findViewById(R.id.name);
@@ -424,6 +440,7 @@ public class DetailStoreFragment extends Fragment{
             }
         });
     }
+
 
     private void abrirBottomSheerFilter(){
 

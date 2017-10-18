@@ -37,11 +37,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.savingfood.R;
-import br.com.savingfood.firebase.FirebaseServices;
 import br.com.savingfood.fragment.StoreListFragment;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
-import br.com.savingfood.model.User;
 import br.com.savingfood.utils.Config;
 import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.LocationHelper;
@@ -160,7 +158,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             getAddress(mLastLocation.getLatitude(),mLastLocation.getLongitude());
 
             if(fragment != null)
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
     }
 
     public void getAddress(Double latitude,Double longitude)
@@ -278,7 +276,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+            super.onBackPressed();
     }
 
     @Override

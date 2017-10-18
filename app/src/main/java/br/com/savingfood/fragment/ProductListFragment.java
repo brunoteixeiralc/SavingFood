@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,30 +37,31 @@ public class ProductListFragment extends Fragment {
     private AppBarLayout appBarLayout;
     private List<Product> products;
     private String category;
+    private Fragment fragment;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.list, container, false);
-        view.setFocusableInTouchMode(true);
-        view.requestFocus();
-        view.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-                    if (i == KeyEvent.KEYCODE_BACK) {
-                        getFragmentManager().popBackStack();
-                        Utils.setIconBar(EnumToolBar.STOREDETAIL, toolbar);
-                        toolbar.setTitle("");
-
-                        appBarLayout.setExpanded(true, true);
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        Utils.setIconBar(EnumToolBar.STOREDETAIL, toolbar);
+//                        toolbar.setTitle("");
+//
+//                        appBarLayout.setExpanded(true, true);
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
 
         products = (List<Product>) getArguments().getSerializable("products");
         category = getArguments().getString("category");
@@ -74,7 +76,10 @@ public class ProductListFragment extends Fragment {
         appBarLayout.setExpanded(false, true);
 
         mLayoutManager = new LinearLayoutManager(ProductListFragment.this.getActivity());
-        mAdapter = new ProductAdapter(onClickListener(), ProductListFragment.this.getContext(), products);
+
+        if(products != null)
+            mAdapter = new ProductAdapter(onClickListener(), ProductListFragment.this.getContext(), products);
+
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -91,6 +96,13 @@ public class ProductListFragment extends Fragment {
             @Override
             public void onClick(View view, int idx) {
 
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("product",products.get(idx));
+
+                fragment = new ProductDetailFragment();
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
     }
