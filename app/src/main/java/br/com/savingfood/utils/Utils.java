@@ -132,7 +132,7 @@ public final class Utils {
                 break;
             }
             case STOREDETAIL: {
-                mIconFilter.setVisibility(View.VISIBLE);
+                //mIconFilter.setVisibility(View.VISIBLE);
                 mIconRoute.setVisibility(View.VISIBLE);
                 break;
             }

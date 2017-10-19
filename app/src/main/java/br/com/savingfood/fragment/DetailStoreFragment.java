@@ -16,7 +16,6 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.InflateException;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -83,6 +82,33 @@ public class DetailStoreFragment extends Fragment{
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+//        view.setFocusableInTouchMode(true);
+//        view.requestFocus();
+//        view.setOnKeyListener(new View.OnKeyListener() {
+//            @Override
+//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
+//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
+//                    if (i == KeyEvent.KEYCODE_BACK) {
+//                        getFragmentManager().popBackStack();
+//                        Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
+//                        toolbar.setTitle("Lojas Próximas");
+//                        appBarLayout.setExpanded(true,true);
+//
+//                        img = (ImageView) getActivity().findViewById(R.id.img);
+//                        img.setImageResource(R.drawable.img_loja_proxima);
+//
+//                        return true;
+//                    }
+//                }
+//                return false;
+//            }
+//        });
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -97,26 +123,6 @@ public class DetailStoreFragment extends Fragment{
         } catch (InflateException e) {
 
         }
-
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (i == KeyEvent.KEYCODE_BACK) {
-//                        getFragmentManager().popBackStack();
-//                        Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
-//                        toolbar.setTitle("Lojas Próximas");
-//                        appBarLayout.setExpanded(true,true);
-//
-//                        Glide.with(DetailStoreFragment.this.getContext()).load(store.getImg()).into(img);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
 
         setHasOptionsMenu(true);
         mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -194,6 +200,7 @@ public class DetailStoreFragment extends Fragment{
             //btnSeeAll.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            Utils.closeDialog(DetailStoreFragment.this.getContext());
         }
 
         name = (TextView) view.findViewById(R.id.name);
@@ -351,7 +358,7 @@ public class DetailStoreFragment extends Fragment{
                     fragment = new ProductDetailFragment();
                     fragment.setArguments(bundle);
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                    transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
 
                 }else{
                     Utils.openDialog(DetailStoreFragment.this.getContext(),"Carregando produtos.");

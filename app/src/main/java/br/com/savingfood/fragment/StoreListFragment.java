@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,10 +36,10 @@ import br.com.savingfood.R;
 import br.com.savingfood.adapter.StoreAdapter;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
+import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.GeofenceTrasitionService;
-import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.Utils;
 
 /**
@@ -186,7 +185,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
                 fragment = new DetailStoreFragment();
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
     }
