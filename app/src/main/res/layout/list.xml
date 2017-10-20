@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+<android.support.v7.widget.RecyclerView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/recyclerView"
@@ -13,3 +19,36 @@
     android:visibility="visible"
     android:background="@color/white"/>
 
+    <LinearLayout
+    android:id="@+id/ll_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+        <TextView
+            android:background="@color/colorPrimary"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:text="@string/no_product"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:minLines="2"/>
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/animation_view"
+            android:layout_gravity="top"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            app:lottie_fileName="shrug.json"
+            app:lottie_loop="true"
+            app:lottie_autoPlay="false"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -49,7 +49,7 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     public interface onClickListener  {
-        public void onClick(View view, int idx);
+        void onClick(View view, int idx);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     vhProduct.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onClickListener.onClick(vhProduct.itemView, position);
+                            onClickListener.onClick(view, position);
                         }
                     });
                 }
@@ -95,7 +95,7 @@ public class ProdCategAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     vhCategory.itemView.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            onClickListener.onClick(vhCategory.itemView, position);
+                            onClickListener.onClick(view, position);
                         }
                     });
                 }

@@ -38,6 +38,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.savingfood.R;
+import br.com.savingfood.fragment.DetailStoreFragment;
+import br.com.savingfood.fragment.ProductDetailFragment;
+import br.com.savingfood.fragment.ProductListFragment;
 import br.com.savingfood.fragment.StoreListFragment;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
@@ -273,6 +276,17 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     @Override
     public void onBackPressed() {
+        fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (fragment instanceof StoreListFragment) {
+            Log.i(TAG, fragment.getClass().getCanonicalName());
+        } else if (fragment instanceof DetailStoreFragment) {
+            Log.i(TAG, fragment.getClass().getCanonicalName());
+        } else if (fragment instanceof ProductDetailFragment) {
+            Log.i(TAG, fragment.getClass().getCanonicalName());
+        }  else if (fragment instanceof ProductListFragment) {
+            Log.i(TAG, fragment.getClass().getCanonicalName());
+        }
+
         super.onBackPressed();
     }
 

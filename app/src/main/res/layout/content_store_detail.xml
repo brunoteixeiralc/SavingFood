@@ -80,16 +80,6 @@
             android:scrollbars="vertical"
             android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/btn_see_all"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rounded_bg"
-            android:text="@string/see_others_products"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            android:layout_margin="8dp"/>
-
         <LinearLayout
             android:id="@+id/ll_store_detail"
             android:layout_width="match_parent"

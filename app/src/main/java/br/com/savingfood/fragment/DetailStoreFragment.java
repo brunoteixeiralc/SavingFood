@@ -73,41 +73,13 @@ public class DetailStoreFragment extends Fragment{
     private Toolbar toolbar;
     private List<Object> products;
     private List<Product> productsByCategory;
-    private BottomSheetDialog dialog;
-    private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
+    //private BottomSheetDialog dialog;
+    //private TextView moreViews,lessViews,morePrice,lessPrice,moreQuatity,lessQuatity;
     private AppBarLayout appBarLayout;
     private LottieAnimationView animationView;
     private LinearLayout linearLayout;
-    //private Button btnSeeAll;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (i == KeyEvent.KEYCODE_BACK) {
-//                        getFragmentManager().popBackStack();
-//                        Utils.setIconBar(EnumToolBar.STORELIST,toolbar);
-//                        toolbar.setTitle("Lojas Próximas");
-//                        appBarLayout.setExpanded(true,true);
-//
-//                        img = (ImageView) getActivity().findViewById(R.id.img);
-//                        img.setImageResource(R.drawable.img_loja_proxima);
-//
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
-    }
 
     @Nullable
     @Override
@@ -131,19 +103,14 @@ public class DetailStoreFragment extends Fragment{
 
         if(getArguments() != null){
             store = (Store) getArguments().getSerializable("store");
-            //products = (List<Product>) getArguments().getSerializable("products");
         }
 
-        if(recyclerView == null){
-
-            recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
-            mLayoutManager = new LinearLayoutManager(DetailStoreFragment.this.getActivity());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setHasFixedSize(true);
-            recyclerView.addItemDecoration(new DividerItemDecoration(DetailStoreFragment.this.getContext(),LinearLayoutManager.VERTICAL));
-
-        }
+        recyclerView = (RecyclerView)view.findViewById(R.id.recyclerView);
+        mLayoutManager = new LinearLayoutManager(DetailStoreFragment.this.getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new DividerItemDecoration(DetailStoreFragment.this.getContext(),LinearLayoutManager.VERTICAL));
 
         toolbar =(Toolbar)getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -157,19 +124,11 @@ public class DetailStoreFragment extends Fragment{
         linearLayout = (LinearLayout) view.findViewById(R.id.ll_store_detail);
         animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
 
-//        btnSeeAll = (Button) view.findViewById(R.id.btn_see_all);
-//        btnSeeAll.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//
-//            }
-//        });
-
         mIconFilter = (ImageView) toolbar.findViewById(R.id.ic_filter);
         mIconFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 abrirBottomSheerFilter();
+                 //abrirBottomSheerFilter();
             }
         });
 
@@ -192,14 +151,14 @@ public class DetailStoreFragment extends Fragment{
         }
 
         if(products == null || products.size() == 0){
-            //btnSeeAll.setVisibility(View.GONE);
             products = new ArrayList<>();
             getProducts(store.getNetwork(),store.getName());
 
         }else{
-            //btnSeeAll.setVisibility(View.VISIBLE);
             linearLayout.setVisibility(View.GONE);
             recyclerView.setVisibility(View.VISIBLE);
+            mAdapter = new ProdCategAdapter(onClickListener(),products,DetailStoreFragment.this.getContext());
+            recyclerView.setAdapter(mAdapter);
             Utils.closeDialog(DetailStoreFragment.this.getContext());
         }
 
@@ -278,7 +237,7 @@ public class DetailStoreFragment extends Fragment{
 
     private void getProducts(String network,String store){
 
-        mDatabase.child("discounts").orderByChild("search").equalTo(network+"_"+store).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild("search").equalTo(network+"_"+store).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -307,7 +266,7 @@ public class DetailStoreFragment extends Fragment{
 
     private void getCategory(){
 
-        mDatabase.child("category").addValueEventListener(new ValueEventListener() {
+        mDatabase.child("category").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -373,7 +332,7 @@ public class DetailStoreFragment extends Fragment{
 
         productsByCategory.clear();
 
-        mDatabase.child("discounts").orderByChild("category").equalTo(category).addValueEventListener(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild("category").equalTo(category).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if(dataSnapshot.hasChildren()){
@@ -384,14 +343,14 @@ public class DetailStoreFragment extends Fragment{
                     }
                 }
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("products", (Serializable) productsByCategory);
-                bundle.putSerializable("category", category);
+                 Bundle bundle = new Bundle();
+                 bundle.putSerializable("products", (Serializable) productsByCategory);
+                 bundle.putSerializable("category", category);
 
-                fragment = new ProductListFragment();
-                fragment.setArguments(bundle);
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                 fragment = new ProductListFragment();
+                 fragment.setArguments(bundle);
+                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                 transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
 
                 Utils.closeDialog(DetailStoreFragment.this.getContext());
             }
@@ -403,112 +362,112 @@ public class DetailStoreFragment extends Fragment{
         });
     }
 
-    private void filterProducts(final String type, final String node){
+//    private void filterProducts(final String type, final String node){
+//
+//        Utils.openDialog(DetailStoreFragment.this.getContext(),"Filtrando");
+//
+//        mDatabase.child("discounts").orderByChild(node).addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//
+//                products.clear();
+//
+//                if (dataSnapshot.hasChildren()) {
+//
+//                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+//
+//                          Product product = st.getValue(Product.class);
+//                          if(product.getSearch().equalsIgnoreCase(store.getNetwork()+"_"+store.getName())){
+//                              product.setFieldToFilter(node);
+//                              products.add(product);
+//                          }
+//                    }
+//                }
+//
+//                if(products.size() != 0){
+//
+//                    if(type.equalsIgnoreCase("more")){
+//                        Collections.sort(products, Collections.reverseOrder());
+//                    }
+//
+//                    recyclerView.setVisibility(View.VISIBLE);
+//                    mAdapter = new ProdCategAdapter(onClickListener(),products,DetailStoreFragment.this.getContext());
+//                    recyclerView.setAdapter(mAdapter);
+//
+//                }
+//
+//                dialog.dismiss();
+//                Utils.closeDialog(DetailStoreFragment.this.getContext());
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
-        Utils.openDialog(DetailStoreFragment.this.getContext(),"Filtrando");
 
-        mDatabase.child("discounts").orderByChild(node).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                products.clear();
-
-                if (dataSnapshot.hasChildren()) {
-
-                    for (DataSnapshot st : dataSnapshot.getChildren()) {
-
-                          Product product = st.getValue(Product.class);
-                          if(product.getSearch().equalsIgnoreCase(store.getNetwork()+"_"+store.getName())){
-                              product.setFieldToFilter(node);
-                              products.add(product);
-                          }
-                    }
-                }
-
-                if(products.size() != 0){
-
-                    if(type.equalsIgnoreCase("more")){
-                        Collections.sort(products, Collections.reverseOrder());
-                    }
-
-                    recyclerView.setVisibility(View.VISIBLE);
-                    //mAdapter = new ProductAdapter(onClickListener(),DetailStoreFragment.this.getContext(),products);
-                    recyclerView.setAdapter(mAdapter);
-
-                }
-
-                dialog.dismiss();
-                Utils.closeDialog(DetailStoreFragment.this.getContext());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-    private void abrirBottomSheerFilter(){
-
-       View view = DetailStoreFragment.this.getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_filter,null);
-       dialog = new BottomSheetDialog(view.getContext());
-       dialog.setContentView(view);
-       dialog.show();
-
-       lessViews = (TextView) view.findViewById(R.id.less_view);
-       lessViews.setOnClickListener(new View.OnClickListener() {
-           @Override
-           public void onClick(View view) {
-
-               filterProducts("less","views");
-           }
-       });
-
-        moreViews = (TextView) view.findViewById(R.id.more_views);
-        moreViews.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                filterProducts("more","views");
-            }
-        });
-
-        moreQuatity = (TextView) view.findViewById(R.id.more_quantity);
-        moreQuatity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                filterProducts("more","quantity");
-            }
-        });
-
-        lessQuatity = (TextView) view.findViewById(R.id.less_quantity);
-        lessQuatity.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                filterProducts("less","quantity");
-            }
-        });
-
-        morePrice = (TextView) view.findViewById(R.id.more_price);
-        morePrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                filterProducts("more","price");
-            }
-        });
-
-        lessPrice = (TextView) view.findViewById(R.id.less_price);
-        lessPrice.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                filterProducts("less","price");
-            }
-        });
-
-    }
+//    private void abrirBottomSheerFilter(){
+//
+//       View view = DetailStoreFragment.this.getActivity().getLayoutInflater().inflate(R.layout.bottom_sheet_filter,null);
+//       dialog = new BottomSheetDialog(view.getContext());
+//       dialog.setContentView(view);
+//       dialog.show();
+//
+//       lessViews = (TextView) view.findViewById(R.id.less_view);
+//       lessViews.setOnClickListener(new View.OnClickListener() {
+//           @Override
+//           public void onClick(View view) {
+//
+//               filterProducts("less","views");
+//           }
+//       });
+//
+//        moreViews = (TextView) view.findViewById(R.id.more_views);
+//        moreViews.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                filterProducts("more","views");
+//            }
+//        });
+//
+//        moreQuatity = (TextView) view.findViewById(R.id.more_quantity);
+//        moreQuatity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                filterProducts("more","quantity");
+//            }
+//        });
+//
+//        lessQuatity = (TextView) view.findViewById(R.id.less_quantity);
+//        lessQuatity.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                filterProducts("less","quantity");
+//            }
+//        });
+//
+//        morePrice = (TextView) view.findViewById(R.id.more_price);
+//        morePrice.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                filterProducts("more","price");
+//            }
+//        });
+//
+//        lessPrice = (TextView) view.findViewById(R.id.less_price);
+//        lessPrice.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                filterProducts("less","price");
+//            }
+//        });
+//
+//    }
 }

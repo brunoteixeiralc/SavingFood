@@ -13,10 +13,14 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.List;
 
 import br.com.savingfood.R;
+import br.com.savingfood.adapter.ProdCategAdapter;
 import br.com.savingfood.adapter.ProductAdapter;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.utils.DividerItemDecoration;
@@ -38,30 +42,17 @@ public class ProductListFragment extends Fragment {
     private List<Product> products;
     private String category;
     private Fragment fragment;
+    private LinearLayout linearLayout;
+    private LottieAnimationView animationView;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.list, container, false);
-//        view.setFocusableInTouchMode(true);
-//        view.requestFocus();
-//        view.setOnKeyListener(new View.OnKeyListener() {
-//            @Override
-//            public boolean onKey(View view, int i, KeyEvent keyEvent) {
-//                if (keyEvent.getAction() == KeyEvent.ACTION_DOWN) {
-//                    if (i == KeyEvent.KEYCODE_BACK) {
-//                        getFragmentManager().popBackStack();
-//                        Utils.setIconBar(EnumToolBar.STOREDETAIL, toolbar);
-//                        toolbar.setTitle("");
-//
-//                        appBarLayout.setExpanded(true, true);
-//                        return true;
-//                    }
-//                }
-//                return false;
-//            }
-//        });
+
+        linearLayout = (LinearLayout) view.findViewById(R.id.ll_list);
+        animationView = (LottieAnimationView) view.findViewById(R.id.animation_view);
 
         products = (List<Product>) getArguments().getSerializable("products");
         category = getArguments().getString("category");
@@ -77,15 +68,24 @@ public class ProductListFragment extends Fragment {
 
         mLayoutManager = new LinearLayoutManager(ProductListFragment.this.getActivity());
 
-        if(products != null)
-            mAdapter = new ProductAdapter(onClickListener(), ProductListFragment.this.getContext(), products);
-
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(ProductListFragment.this.getContext(), LinearLayoutManager.VERTICAL));
+
+        if(products.size() != 0) {
+            linearLayout.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.VISIBLE);
+
+            mAdapter = new ProductAdapter(onClickListener(), ProductListFragment.this.getContext(), products);
+            recyclerView.setAdapter(mAdapter);
+
+        }else{
+            recyclerView.setVisibility(View.GONE);
+            linearLayout.setVisibility(View.VISIBLE);
+            animationView.playAnimation();
+        }
 
         return view;
     }
@@ -102,7 +102,7 @@ public class ProductListFragment extends Fragment {
                 fragment = new ProductDetailFragment();
                 fragment.setArguments(bundle);
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                transaction.add(R.id.fragment_container, fragment).addToBackStack(null).commit();
+                transaction.replace(R.id.fragment_container, fragment).addToBackStack(null).commit();
             }
         };
     }

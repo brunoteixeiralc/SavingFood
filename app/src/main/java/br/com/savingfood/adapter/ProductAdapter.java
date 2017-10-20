@@ -69,7 +69,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
        holder.views.setText(p.getViews() + " visualizações");
        holder.price_from.setPaintFlags(holder.price_from.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
        holder.price_from.setText(Money.reais(new BigDecimal(p.getOld_price(), MathContext.DECIMAL64)).toString());
-        holder.price_to.setText(Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
+       holder.price_to.setText(Money.reais(new BigDecimal(p.getPrice(), MathContext.DECIMAL64)).toString());
        if(p.getImg() != null){
            Glide.with(context).load(p.getImg()).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL)).listener(new RequestListener<Drawable>() {
                @Override
@@ -93,14 +93,14 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    productOnClickListener.onClick(holder.itemView, position);
+                    productOnClickListener.onClick(view, position);
                 }
             });
         }
     }
 
     public interface ProductOnClickListener  {
-        public void onClick(View view, int idx);
+        void onClick(View view, int idx);
     }
 
     public static class ProductViewHolder extends RecyclerView.ViewHolder {
