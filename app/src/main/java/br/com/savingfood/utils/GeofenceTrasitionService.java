@@ -13,12 +13,18 @@ import android.util.Log;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofenceStatusCodes;
 import com.google.android.gms.location.GeofencingEvent;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.savingfood.R;
 import br.com.savingfood.activity.MainActivity;
+import br.com.savingfood.model.GeoFenceModel;
+import io.realm.Realm;
 
 /**
  * Created by brunolemgruber on 10/10/2017.
@@ -31,9 +37,15 @@ public class GeofenceTrasitionService extends IntentService{
     private String store;
     private String username;
     private int geoFenceTransition;
+    private DatabaseReference mDatabase;
+    private FirebaseAuth firebaseAuth;
+    private GeoFenceModel geoFenceModel;
+    private String mLastUpdateTime;
+    private Realm realm;
 
     public GeofenceTrasitionService() {
         super(TAG);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
     }
 
     @Override
@@ -64,9 +76,8 @@ public class GeofenceTrasitionService extends IntentService{
         }
     }
 
-    // Create a detail message with Geofences received
     private String getGeofenceTrasitionDetails(int geoFenceTransition, List<Geofence> triggeringGeofences) {
-        // get the ID of each geofence triggered
+
         ArrayList<String> triggeringGeofencesList = new ArrayList<>();
         for ( Geofence geofence : triggeringGeofences ) {
             triggeringGeofencesList.add( geofence.getRequestId() );
@@ -80,25 +91,50 @@ public class GeofenceTrasitionService extends IntentService{
         return status;
     }
 
-    // Send a notification
     private void sendNotification( String msg ) {
         Log.i(TAG, "sendNotification: " + msg );
 
-        // Intent to start the main Activity
-        Intent notificationIntent = MainActivity.makeNotificationIntent(
-                getApplicationContext(), msg);
+        Intent notificationIntent = MainActivity.makeNotificationIntent(getApplicationContext(), msg);
 
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         stackBuilder.addParentStack(MainActivity.class);
         stackBuilder.addNextIntent(notificationIntent);
         PendingIntent notificationPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Creating and sending Notification
         NotificationManager notificatioMng = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
         notificatioMng.notify(GEOFENCE_NOTIFICATION_ID, createNotification(msg, notificationPendingIntent));
+
+        //TODO colocar o horario da data formatada.
+        mLastUpdateTime = DateFormat.getTimeInstance().format(new java.util.Date());
+
+        if(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
+
+            geoFenceModel.setEnter_date(mLastUpdateTime);
+            String key = mDatabase.push().getKey();
+            geoFenceModel.setKey(key);
+
+            mDatabase.child("geofence").child(firebaseAuth.getCurrentUser().getUid()).child(key).setValue(geoFenceModel);
+
+            realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
+            realm.copyToRealm(geoFenceModel);
+            realm.commitTransaction();
+
+        }else if(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
+
+            realm = Realm.getDefaultInstance();
+            GeoFenceModel geoFenceModel = realm.where(GeoFenceModel.class).findFirst();
+            geoFenceModel.setExit_date(mLastUpdateTime);
+
+            mDatabase.child("geofence").child(firebaseAuth.getCurrentUser().getUid()).child(geoFenceModel.getKey()).setValue(geoFenceModel);
+
+            realm.beginTransaction();
+            realm.clear(GeoFenceModel.class);
+            realm.commitTransaction();
+        }
+
     }
 
-    // Create a notification
     private android.app.Notification createNotification(String msg, PendingIntent notificationPendingIntent) {
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder
@@ -112,7 +148,6 @@ public class GeofenceTrasitionService extends IntentService{
         return notificationBuilder.build();
     }
 
-    // Handle errors
     private static String getErrorString(int errorCode) {
         switch (errorCode) {
             case GeofenceStatusCodes.GEOFENCE_NOT_AVAILABLE:

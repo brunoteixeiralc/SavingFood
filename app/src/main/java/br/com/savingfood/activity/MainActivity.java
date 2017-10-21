@@ -1,16 +1,17 @@
 package br.com.savingfood.activity;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.LocalBroadcastManager;
@@ -22,59 +23,51 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.io.Serializable;
+import java.text.DateFormat;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 import br.com.savingfood.R;
 import br.com.savingfood.fragment.DetailStoreFragment;
 import br.com.savingfood.fragment.ProductDetailFragment;
 import br.com.savingfood.fragment.ProductListFragment;
 import br.com.savingfood.fragment.StoreListFragment;
-import br.com.savingfood.model.Product;
-import br.com.savingfood.model.Store;
 import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.Config;
 import br.com.savingfood.utils.LocationHelper;
 import br.com.savingfood.utils.PermissionUtils;
-import br.com.savingfood.utils.Utils;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by brunolemgruber on 14/07/16.
  */
 
-public class MainActivity extends AppCompatActivity  implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,ActivityCompat.OnRequestPermissionsResultCallback,
-        PermissionUtils.PermissionResultCallback{
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, ActivityCompat.OnRequestPermissionsResultCallback,
+        PermissionUtils.PermissionResultCallback, LocationListener {
 
-    // LogCat tag
     private static final String TAG = MainActivity.class.getSimpleName();
+
     private Location mLastLocation;
     boolean isPermissionGranted;
-
     private Fragment fragment;
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
     private Bundle bundle;
     private LocationHelper locationHelper;
-
-    private List<Store> storeList = new ArrayList<>();
-    private DatabaseReference mDatabase;
-
+    private LocationRequest mLocationRequest;
     private Toolbar toolbar;
-    private AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -85,16 +78,15 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-
-        locationHelper=new LocationHelper(this);
+        locationHelper = new LocationHelper(this);
         locationHelper.checkpermission();
         if (locationHelper.checkPlayServices()) {
             locationHelper.buildGoogleApiClient();
+            createLocationRequest();
         }
 
         mAuth = FirebaseAuth.getInstance();
-        
+
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -130,50 +122,44 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             @Override
             public void onReceive(Context context, Intent intent) {
 
-                if(intent.getAction().equals(Config.PUSH_NOTIFICATION)){
+                if (intent.getAction().equals(Config.PUSH_NOTIFICATION)) {
 
                     String message = intent.getStringExtra("message");
                     Toast.makeText(getApplicationContext(), "Push notification: " + message, Toast.LENGTH_LONG).show();
                 }
             }
         };
+    }
 
+    protected void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(600000);
+        mLocationRequest.setFastestInterval(60000);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
 
-//        bundle.putBoolean("loadAllProducts", getIntent().getBooleanExtra("loadAllProducts",false));
-//        if(!getIntent().getBooleanExtra("loadAllProducts",false)){
-//            bundle.putSerializable("products",getIntent().getBundleExtra("bundle_products").getSerializable("products"));
-//        }
+    }
 
-
+    private void goStoresFragment() {
         fragment = new StoreListFragment();
+        bundle = new Bundle();
+        bundle.putDouble("mLatitude", mLastLocation.getLatitude());
+        bundle.putDouble("mLongitude",mLastLocation.getLongitude());
 
-        mLastLocation=locationHelper.getLocation();
-        if (mLastLocation != null) {
-            getStores(mLastLocation);
-            Utils.openDialog(this,"Procurando lojas.");
-        }
-    }
+        getAddress(mLastLocation.getLatitude(), mLastLocation.getLongitude());
 
-    private void goStoresFragment(){
-
-            bundle = new Bundle();
-            bundle.putSerializable("stores", (Serializable) storeList);
+        if (fragment != null){
             fragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment,"StoreList").commit();
+        }
 
-            getAddress(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-
-            if(fragment != null)
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
     }
 
-    public void getAddress(Double latitude,Double longitude)
-    {
+    public void getAddress(Double latitude, Double longitude) {
         Address locationAddress;
 
-        locationAddress=locationHelper.getAddress(latitude,longitude);
+        locationAddress = locationHelper.getAddress(latitude, longitude);
 
-        if(locationAddress!=null)
-        {
+        if (locationAddress != null) {
             String address = locationAddress.getAddressLine(0);
             String address1 = locationAddress.getAddressLine(1);
             String city = locationAddress.getLocality();
@@ -183,95 +169,46 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
             String currentLocation;
 
-            if(!TextUtils.isEmpty(address))
-            {
-                currentLocation=address;
+            if (!TextUtils.isEmpty(address)) {
+                currentLocation = address;
 
                 if (!TextUtils.isEmpty(address1))
-                    currentLocation+="\n"+address1;
+                    currentLocation += "\n" + address1;
 
-                if (!TextUtils.isEmpty(city))
-                {
-                    currentLocation+="\n"+city;
+                if (!TextUtils.isEmpty(city)) {
+                    currentLocation += "\n" + city;
 
                     if (!TextUtils.isEmpty(postalCode))
-                        currentLocation+=" - "+postalCode;
-                }
-                else
-                {
+                        currentLocation += " - " + postalCode;
+                } else {
                     if (!TextUtils.isEmpty(postalCode))
-                        currentLocation+="\n"+postalCode;
+                        currentLocation += "\n" + postalCode;
                 }
 
                 if (!TextUtils.isEmpty(state))
-                    currentLocation+="\n"+state;
+                    currentLocation += "\n" + state;
 
                 if (!TextUtils.isEmpty(country))
-                    currentLocation+="\n"+country;
+                    currentLocation += "\n" + country;
 
-              SharedPreferences pref = this.getSharedPreferences(Config.SHARED_PREF, 0);
-              SharedPreferences.Editor editor = pref.edit();
-              editor.putString("actual_address", currentLocation);
-              editor.commit();
+                SharedPreferences pref = this.getSharedPreferences(Config.SHARED_PREF, 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putString("actual_address", currentLocation);
+                editor.commit();
 
             }
 
-        }
-        else
+        } else
             showToast("Something went wrong");
     }
 
-    public void showToast(String message)
-    {
-        Toast.makeText(this,message,Toast.LENGTH_SHORT).show();
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void getStores(final Location l){
-
-        mDatabase.child("network").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                storeList.clear();
-
-                if(dataSnapshot.hasChildren()){
-
-                    for (DataSnapshot nt: dataSnapshot.getChildren()) {
-                        for (DataSnapshot st: nt.getChildren()) {
-
-                            Store store = st.getValue(Store.class);
-                            store.setProducts(new ArrayList<Product>());
-
-                            Location storeLocation=new Location("storeLocation");
-                            storeLocation.setLatitude(store.getLat());
-                            storeLocation.setLongitude(store.getLng());
-
-                            Float distanceTo = l.distanceTo(storeLocation) / 1000;
-
-                            store.setDistance(distanceTo);
-
-                            store.setNetwork(nt.getKey());
-                            store.setKeyStore(st.getKey());
-
-                            storeList.add(store);
-                        }             
-                    }
-                    goStoresFragment();
-                    Utils.closeDialog(MainActivity.this);
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Utils.closeDialog(MainActivity.this);
-            }
-        });
-    }
-
-    public static Intent makeNotificationIntent(Context geofenceService, String msg)
-    {
-        Log.d(TAG,msg);
-        return new Intent(geofenceService,MainActivity.class);
+    public static Intent makeNotificationIntent(Context geofenceService, String msg) {
+        Log.d(TAG, msg);
+        return new Intent(geofenceService, MainActivity.class);
     }
 
     @Override
@@ -283,7 +220,7 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
             Log.i(TAG, fragment.getClass().getCanonicalName());
         } else if (fragment instanceof ProductDetailFragment) {
             Log.i(TAG, fragment.getClass().getCanonicalName());
-        }  else if (fragment instanceof ProductListFragment) {
+        } else if (fragment instanceof ProductListFragment) {
             Log.i(TAG, fragment.getClass().getCanonicalName());
         }
 
@@ -324,19 +261,27 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        locationHelper.onActivityResult(requestCode,resultCode,data);
+        locationHelper.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        mLastLocation=locationHelper.getLocation();
+        mLastLocation = locationHelper.getLocation();
 
         if (mLastLocation != null) {
-            getStores(mLastLocation);
-            Utils.openDialog(this,"Procurando lojas.");
+            startLocationUpdates();
+            goStoresFragment();
             GoogleApiSingleton.getInstance(locationHelper.getGoogleApiCLient());
 
         }
+    }
+
+    protected void startLocationUpdates() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+            return;
+
+        PendingResult<Status> pendingResult = LocationServices.FusedLocationApi.requestLocationUpdates(locationHelper.getGoogleApiCLient(), mLocationRequest, this);
+        Log.d(TAG, "Location update started ..............: ");
     }
 
     @Override
@@ -350,7 +295,6 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
                 + connectionResult.getErrorCode());
     }
 
-    // Permission check functions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
@@ -379,4 +323,12 @@ public class MainActivity extends AppCompatActivity  implements GoogleApiClient.
         Log.i("PERMISSION","NEVER ASK AGAIN");
     }
 
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+        String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+        ((StoreListFragment)fragment).getStores(mLastLocation);
+
+        Log.i(TAG, "onLocationChanged: " + mLastUpdateTime);
+    }
 }

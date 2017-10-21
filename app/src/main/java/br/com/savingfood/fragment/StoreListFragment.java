@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,8 +29,14 @@ import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.savingfood.R;
@@ -51,7 +58,7 @@ import io.realm.Realm;
 public class StoreListFragment extends Fragment implements ResultCallback<Status> {
 
     private static View view;
-    protected RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private LinearLayoutManager mLayoutManager;
     private RecyclerView.Adapter mAdapter;
     private Fragment fragment;
@@ -64,6 +71,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
     private GoogleApiClient googleApiClient;
     private PendingIntent geoFencePendingIntent;
     private Store storeSelected;
+    private DatabaseReference mDatabase;
 
     @Nullable
     @Override
@@ -71,7 +79,21 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
 
         view = inflater.inflate(R.layout.list, container, false);
 
+        Utils.openDialog(StoreListFragment.this.getContext(),"Carregando lojas.");
+
+        Double mLatitude = getArguments().getDouble("mLatitude");
+        Double mLongitude = getArguments().getDouble("mLongitude");
+        Location location = new Location("location");
+        location.setLatitude(mLatitude);
+        location.setLongitude(mLongitude);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(StoreListFragment.this.getContext());
+
+        if(storeList == null)
+            storeList = new ArrayList<>();
+
+        getStores(location);
 
         toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar);
         toolbar.setVisibility(View.VISIBLE);
@@ -102,17 +124,15 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
 //            }
 //        });
 
-        if (getArguments() != null) {
-            storeList = (List<Store>) getArguments().getSerializable("stores");
-        }
+//        if (getArguments() != null) {
+//            storeList = (List<Store>) getArguments().getSerializable("stores");
+//        }
 
         mLayoutManager = new LinearLayoutManager(StoreListFragment.this.getActivity());
-        mAdapter = new StoreAdapter(onClickListener(), StoreListFragment.this.getContext(), storeList);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(StoreListFragment.this.getContext(), LinearLayoutManager.VERTICAL));
 
         return view;
@@ -198,13 +218,57 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
         };
     }
 
+    public void getStores(final Location l) {
+
+        if(mDatabase == null)
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child("network").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                storeList.clear();
+
+                if (dataSnapshot.hasChildren()) {
+
+                    for (DataSnapshot nt : dataSnapshot.getChildren()) {
+                        for (DataSnapshot st : nt.getChildren()) {
+
+                            Store store = st.getValue(Store.class);
+                            store.setProducts(new ArrayList<Product>());
+
+                            Location storeLocation = new Location("storeLocation");
+                            storeLocation.setLatitude(store.getLat());
+                            storeLocation.setLongitude(store.getLng());
+
+                            Float distanceTo = l.distanceTo(storeLocation) / 1000;
+
+                            store.setDistance(distanceTo);
+
+                            store.setNetwork(nt.getKey());
+                            store.setKeyStore(st.getKey());
+
+                            storeList.add(store);
+                        }
+                    }
+
+                    mAdapter = new StoreAdapter(onClickListener(), StoreListFragment.this.getContext(), storeList);
+                    recyclerView.setAdapter(mAdapter);
+
+                    Utils.closeDialog(StoreListFragment.this.getContext());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Utils.closeDialog(StoreListFragment.this.getContext());
+            }
+        });
+    }
+
     @Override
     public void onResult(@NonNull Status status) {
         Log.i("savingfoods", "onResult: " + status);
-        if (status.isSuccess()) {
-
-        } else {
-            // inform about fail
-        }
+        if (status.isSuccess()) {}
     }
 }
