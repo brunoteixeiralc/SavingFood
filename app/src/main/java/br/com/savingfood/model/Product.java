@@ -36,6 +36,8 @@ public class Product implements Serializable,Comparable<Product> {
 
     private String search;
 
+    private String search_network;
+
     private String tags;
 
     private String category;
@@ -171,5 +173,13 @@ public class Product implements Serializable,Comparable<Product> {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getSearch_network() {
+        return search_network;
+    }
+
+    public void setSearch_network(String search_network) {
+        this.search_network = search_network;
     }
 }

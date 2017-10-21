@@ -20,26 +20,5 @@
         android:background="@color/white"
         tools:listitem="@layout/list_item_product_discount"/>
 
-    <!--<View-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="2sp"-->
-        <!--android:backgroundTint="@android:color/darker_gray"/>-->
-
-    <!--<android.support.v7.widget.RecyclerView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/recyclerView2"-->
-        <!--android:cacheColorHint="@android:color/transparent"-->
-        <!--android:clipToPadding="false"-->
-        <!--android:divider="@null"-->
-        <!--android:dividerHeight="0dp"-->
-        <!--android:listSelector="@android:color/transparent"-->
-        <!--android:scrollbarStyle="outsideOverlay"-->
-        <!--android:scrollbars="vertical"-->
-        <!--android:visibility="visible"-->
-        <!--android:background="@color/white"-->
-        <!--tools:listitem="@layout/list_item_category"/>-->
-
-
 </LinearLayout>
 

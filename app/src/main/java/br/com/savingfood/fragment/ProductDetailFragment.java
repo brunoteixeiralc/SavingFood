@@ -147,7 +147,7 @@ public class ProductDetailFragment extends Fragment {
         price_from.setText("R$ " + product.getOld_price());
         price_to.setText("para R$ " + product.getPrice());
         description.setText(product.getDescription());
-        quantity.setText(product.getQuantity() + " unidades. Vencimento " + product.getDue_date());
+        quantity.setText("Vencimento " + product.getDue_date());
         if(product.getImg() != null){
 
             Glide.with(ProductDetailFragment.this.getContext()).load(product.getImg()).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.ALL)).listener(new RequestListener<Drawable>() {

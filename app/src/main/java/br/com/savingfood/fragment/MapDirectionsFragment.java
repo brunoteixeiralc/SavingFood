@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -91,6 +92,8 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
             }
         });
 
+        setHasOptionsMenu(true);
+
         appBarLayout = (AppBarLayout) getActivity().findViewById(R.id.appbarlayout);
         appBarLayout.setExpanded(false,true);
 
@@ -111,6 +114,13 @@ public class MapDirectionsFragment extends Fragment implements com.google.androi
 
         return view;
 
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.action_search).setVisible(false);
+
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override

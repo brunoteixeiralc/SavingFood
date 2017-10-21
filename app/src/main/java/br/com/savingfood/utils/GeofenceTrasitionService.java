@@ -5,11 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.Geofence;
@@ -30,6 +28,9 @@ public class GeofenceTrasitionService extends IntentService{
 
     private static final String TAG = GeofenceTrasitionService.class.getSimpleName();
     public static final int GEOFENCE_NOTIFICATION_ID = 0;
+    private String store;
+    private String username;
+    private int geoFenceTransition;
 
     public GeofenceTrasitionService() {
         super(TAG);
@@ -39,6 +40,9 @@ public class GeofenceTrasitionService extends IntentService{
     protected void onHandleIntent(@Nullable Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
+        username = intent.getStringExtra("username");
+        store = intent.getStringExtra("store");
+
         // Handling errors
         if ( geofencingEvent.hasError() ) {
             String errorMsg = getErrorString(geofencingEvent.getErrorCode() );
@@ -47,7 +51,7 @@ public class GeofenceTrasitionService extends IntentService{
         }
 
         // Retrieve GeofenceTrasition
-        int geoFenceTransition = geofencingEvent.getGeofenceTransition();
+        geoFenceTransition = geofencingEvent.getGeofenceTransition();
         // Check if the transition type
         if ( geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ||
                 geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT ) {
@@ -70,10 +74,10 @@ public class GeofenceTrasitionService extends IntentService{
 
         String status = null;
         if ( geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER )
-            status = "Entering ";
+            status = "Estamos quase no " + store + " !";
         else if ( geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT )
-            status = "Exiting ";
-        return status + TextUtils.join( ", ", triggeringGeofencesList);
+            status = "Obrigado. ";
+        return status;
     }
 
     // Send a notification
@@ -99,9 +103,9 @@ public class GeofenceTrasitionService extends IntentService{
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setColor(Color.RED)
                 .setContentTitle(msg)
-                .setContentText("Geofence Notification!")
+                .setContentText(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER ? "Aproveite as ofertas! Boas compras " + username + " !" :
+                "Espero que tenha feito boas compras " + username + " !")
                 .setContentIntent(notificationPendingIntent)
                 .setDefaults(android.app.Notification.DEFAULT_LIGHTS | android.app.Notification.DEFAULT_VIBRATE | android.app.Notification.DEFAULT_SOUND)
                 .setAutoCancel(true);

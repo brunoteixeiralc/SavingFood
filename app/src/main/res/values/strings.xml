@@ -3,7 +3,7 @@
     <string name="intro1_title">Saving Foods</string>
     <string name="intro1">A melhor forma de aproveitar os produtos com promoções incríveis.</string>
     <string name="distance">0.0 km</string>
-    <string name="quantity_detail">0 itens. Vencimento 20/03/17</string>
+    <string name="quantity_detail">Vencimento 20/03/17</string>
     <string name="quantity">Restam 0 itens</string>
     <string name="views">0 visualização</string>
     <string name="price_from">R$ 0.00</string>

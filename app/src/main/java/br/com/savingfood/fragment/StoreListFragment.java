@@ -36,11 +36,13 @@ import br.com.savingfood.R;
 import br.com.savingfood.adapter.StoreAdapter;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
+import br.com.savingfood.model.User;
 import br.com.savingfood.singleton.GoogleApiSingleton;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.GeofenceTrasitionService;
 import br.com.savingfood.utils.Utils;
+import io.realm.Realm;
 
 /**
  * Created by brunolemgruber on 14/07/16.
@@ -61,6 +63,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
     private List<Product> products;
     private GoogleApiClient googleApiClient;
     private PendingIntent geoFencePendingIntent;
+    private Store storeSelected;
 
     @Nullable
     @Override
@@ -141,8 +144,13 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
             return geoFencePendingIntent;
 
         Intent intent = new Intent(StoreListFragment.this.getContext(), GeofenceTrasitionService.class);
-        return PendingIntent.getService(
-                StoreListFragment.this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        intent.putExtra("store",storeSelected.getName());
+
+        Realm realm = Realm.getDefaultInstance();
+        User user = realm.where(User.class).findFirst();
+
+        intent.putExtra("username",user.getName());
+        return PendingIntent.getService(StoreListFragment.this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private void addGeofence(GeofencingRequest request) {
@@ -157,7 +165,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
 
     private void startGeofence(Double lat, Double lng) {
         Log.i("savingfoods", "startGeofence()");
-        Geofence geofence = createGeofence(lat, lng, 50.0f);
+        Geofence geofence = createGeofence(lat, lng, 200.0f);
         GeofencingRequest geofenceRequest = createGeofenceRequest(geofence);
         addGeofence(geofenceRequest);
     }
@@ -167,7 +175,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
             @Override
             public void onClickSticker(View view, int idx) {
 
-                Store storeSelected = storeList.get(idx);
+                storeSelected = storeList.get(idx);
 
                 googleApiClient = GoogleApiSingleton.getInstance(null).get_GoogleApiClient();
                 startGeofence(storeSelected.getLat(), storeSelected.getLng());

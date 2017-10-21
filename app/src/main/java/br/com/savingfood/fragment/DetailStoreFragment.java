@@ -6,9 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -43,7 +43,6 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import br.com.savingfood.R;
@@ -80,6 +79,7 @@ public class DetailStoreFragment extends Fragment{
     private LinearLayout linearLayout;
     private SearchView searchView = null;
     private SearchView.OnQueryTextListener queryTextListener;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     @Nullable
     @Override
@@ -187,6 +187,14 @@ public class DetailStoreFragment extends Fragment{
 
         distance.setText(String.valueOf(df.format(store.getDistance())) + " km");
 
+        swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getProducts(store.getNetwork(),store.getName());
+            }
+        });
+
         return view;
     }
 
@@ -221,11 +229,20 @@ public class DetailStoreFragment extends Fragment{
                 public boolean onQueryTextChange(String newText) {
                     Log.i("onQueryTextChange", newText);
 
+                    if(newText.length() >= 4){
+                        searchProduct(newText);
+
+                    } else if(newText.isEmpty()){
+                        getProducts(store.getNetwork(),store.getName());
+                    }
+
                     return true;
                 }
                 @Override
                 public boolean onQueryTextSubmit(String query) {
                     Log.i("onQueryTextSubmit", query);
+
+                    searchProduct(query);
 
                     return true;
                 }
@@ -235,9 +252,49 @@ public class DetailStoreFragment extends Fragment{
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    private void searchProduct(String text) {
+
+        mDatabase.child("discounts").orderByChild("search").startAt(text).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                products.clear();
+
+                if (dataSnapshot.hasChildren()) {
+
+                    for (DataSnapshot st : dataSnapshot.getChildren()) {
+
+                        Product product = st.getValue(Product.class);
+                        product.setUid(st.getKey());
+                        products.add(product);
+                    }
+                }
+
+                if(products.size() != 0) {
+                    linearLayout.setVisibility(View.GONE);
+                    recyclerView.setVisibility(View.VISIBLE);
+
+                    mAdapter = new ProdCategAdapter(onClickListener(),products,DetailStoreFragment.this.getContext());
+                    recyclerView.setAdapter(mAdapter);
+
+                }else{
+                    recyclerView.setVisibility(View.GONE);
+                    linearLayout.setVisibility(View.VISIBLE);
+                    animationView.playAnimation();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     private void getProducts(String network,String store){
 
-        mDatabase.child("discounts").orderByChild("search").equalTo(network+"_"+store).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabase.child("discounts").orderByChild("search_network").equalTo(network+"_"+store).limitToFirst(3).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -291,6 +348,7 @@ public class DetailStoreFragment extends Fragment{
                     animationView.playAnimation();
                 }
 
+                swipeRefreshLayout.setRefreshing(false);
                 Utils.closeDialog(DetailStoreFragment.this.getContext());
             }
 
