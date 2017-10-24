@@ -327,7 +327,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onLocationChanged(Location location) {
         mLastLocation = location;
         String mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-        ((StoreListFragment)fragment).getStores(mLastLocation);
+
+        if(fragment instanceof DetailStoreFragment)
+            goStoresFragment();
+        else
+            ((StoreListFragment)fragment).getStores(mLastLocation);
 
         Log.i(TAG, "onLocationChanged: " + mLastUpdateTime);
     }

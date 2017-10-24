@@ -104,7 +104,6 @@ public class GeofenceTrasitionService extends IntentService{
         NotificationManager notificatioMng = (NotificationManager) getSystemService( Context.NOTIFICATION_SERVICE );
         notificatioMng.notify(GEOFENCE_NOTIFICATION_ID, createNotification(msg, notificationPendingIntent));
 
-        //TODO colocar o horario da data formatada.
         mLastUpdateTime = Date.formatToString("dd/MM/yyyy HH:mm:ss",new java.util.Date());
 
         if(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){

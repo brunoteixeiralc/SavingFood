@@ -228,6 +228,9 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
+                if(storeList == null){
+                    storeList = new ArrayList<>();
+                }
                 storeList.clear();
 
                 if (dataSnapshot.hasChildren()) {
