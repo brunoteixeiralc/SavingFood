@@ -50,9 +50,11 @@ import br.com.savingfood.adapter.ProdCategAdapter;
 import br.com.savingfood.model.Category;
 import br.com.savingfood.model.Product;
 import br.com.savingfood.model.Store;
+import br.com.savingfood.model.User;
 import br.com.savingfood.utils.DividerItemDecoration;
 import br.com.savingfood.utils.EnumToolBar;
 import br.com.savingfood.utils.Utils;
+import io.realm.Realm;
 
 /**
  * Created by brunolemgruber on 15/07/16.
@@ -233,12 +235,12 @@ public class DetailStoreFragment extends Fragment{
                 public boolean onQueryTextChange(String newText) {
                     Log.i("onQueryTextChange", newText);
 
-                    if(newText.length() >= 4){
-                        searchProduct(newText);
-
-                    } else if(newText.isEmpty()){
-                        getProducts(store.getNetwork(),store.getName());
-                    }
+//                    if(newText.length() >= 4){
+//                        searchProduct(newText);
+//
+//                    } else if(newText.isEmpty()){
+//                        getProducts(store.getNetwork(),store.getName());
+//                    }
 
                     return true;
                 }
@@ -247,6 +249,7 @@ public class DetailStoreFragment extends Fragment{
                     Log.i("onQueryTextSubmit", query);
 
                     searchProduct(query);
+                    saveSearch(query);
 
                     return true;
                 }
@@ -254,6 +257,13 @@ public class DetailStoreFragment extends Fragment{
             searchView.setOnQueryTextListener(queryTextListener);
         }
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    private void saveSearch(String query) {
+        Realm realm = Realm.getDefaultInstance();
+        User user = realm.where(User.class).findFirst();
+
+        mDatabase.child("search").child(user.getUid()).push().child("query").setValue(query);
     }
 
     private void searchProduct(String text) {
