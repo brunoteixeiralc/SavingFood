@@ -170,6 +170,7 @@ public class StoreListFragment extends Fragment implements ResultCallback<Status
         User user = realm.where(User.class).findFirst();
 
         intent.putExtra("username",user.getName());
+        intent.putExtra("uid",user.getUid());
         return PendingIntent.getService(StoreListFragment.this.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 

@@ -14,6 +14,16 @@ public class GeoFenceModel extends RealmObject {
     private String exit_date;
     private String key;
 
+    public GeoFenceModel(){}
+
+    public GeoFenceModel(String uid,String store,String enter_date,String exit_date,String key){
+       this.uid = uid;
+       this.store = store;
+       this.enter_date = enter_date;
+       this.exit_date = exit_date;
+       this.key = key;
+    }
+
     public String getUid() {
         return uid;
     }

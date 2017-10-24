@@ -1,6 +1,7 @@
 package br.com.savingfood.utils;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
@@ -9,6 +10,8 @@ import java.util.Locale;
  */
 
 public class Date {
+
+    private static SimpleDateFormat simpleDateFormat;
 
     public static String formatDate(java.util.Date date, int dateFormat){
 
@@ -24,5 +27,11 @@ public class Date {
 
         DateFormat df = DateFormat.getDateInstance(dateFormat,brasil);
         return df.format(c.getTime());
+    }
+
+    public static String formatToString(String format, java.util.Date date){
+        simpleDateFormat = new SimpleDateFormat(format);
+        String strDate = simpleDateFormat.format(date);
+        return strDate;
     }
 }

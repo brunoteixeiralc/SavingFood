@@ -17,7 +17,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +34,7 @@ public class GeofenceTrasitionService extends IntentService{
     private static final String TAG = GeofenceTrasitionService.class.getSimpleName();
     public static final int GEOFENCE_NOTIFICATION_ID = 0;
     private String store;
-    private String username;
+    private String username,uid;
     private int geoFenceTransition;
     private DatabaseReference mDatabase;
     private FirebaseAuth firebaseAuth;
@@ -52,6 +51,7 @@ public class GeofenceTrasitionService extends IntentService{
     protected void onHandleIntent(@Nullable Intent intent) {
         GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
 
+        uid = intent.getStringExtra("uid");
         username = intent.getStringExtra("username");
         store = intent.getStringExtra("store");
 
@@ -105,15 +105,13 @@ public class GeofenceTrasitionService extends IntentService{
         notificatioMng.notify(GEOFENCE_NOTIFICATION_ID, createNotification(msg, notificationPendingIntent));
 
         //TODO colocar o horario da data formatada.
-        mLastUpdateTime = DateFormat.getTimeInstance().format(new java.util.Date());
+        mLastUpdateTime = Date.formatToString("dd/MM/yyyy HH:mm:ss",new java.util.Date());
 
         if(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER){
 
-            geoFenceModel.setEnter_date(mLastUpdateTime);
             String key = mDatabase.push().getKey();
-            geoFenceModel.setKey(key);
-
-            mDatabase.child("geofence").child(firebaseAuth.getCurrentUser().getUid()).child(key).setValue(geoFenceModel);
+            geoFenceModel = new GeoFenceModel(uid,store,mLastUpdateTime,"",key);
+            mDatabase.child("geofence").child(uid).child(key).setValue(geoFenceModel);
 
             realm = Realm.getDefaultInstance();
             realm.beginTransaction();
@@ -123,12 +121,12 @@ public class GeofenceTrasitionService extends IntentService{
         }else if(geoFenceTransition == Geofence.GEOFENCE_TRANSITION_EXIT){
 
             realm = Realm.getDefaultInstance();
+            realm.beginTransaction();
             GeoFenceModel geoFenceModel = realm.where(GeoFenceModel.class).findFirst();
             geoFenceModel.setExit_date(mLastUpdateTime);
 
-            mDatabase.child("geofence").child(firebaseAuth.getCurrentUser().getUid()).child(geoFenceModel.getKey()).setValue(geoFenceModel);
+            mDatabase.child("geofence").child(uid).child(geoFenceModel.getKey()).setValue(geoFenceModel);
 
-            realm.beginTransaction();
             realm.clear(GeoFenceModel.class);
             realm.commitTransaction();
         }
